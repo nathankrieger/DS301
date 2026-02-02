@@ -1,0 +1,4 @@
+"0",""
+"0","#install.packages(""ISLR2"") #you only need to do this one time."
+"0","library(ISLR2) #you will need to do this every time you open a new R session."
+"0",""

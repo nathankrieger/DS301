@@ -1,0 +1,8 @@
+"0",""
+"0","model_multi <- lm(crim ~ ., data = Boston)"
+"0",""
+"0","multi_table <- as.data.frame(summary(model_multi)$coefficients)"
+"0",""
+"0","colnames(multi_table) <- c(""Estimate"", ""Std. Error"", ""t value"", ""Pr(>|t|)"")"
+"0",""
+"0","round(multi_table, 4)"

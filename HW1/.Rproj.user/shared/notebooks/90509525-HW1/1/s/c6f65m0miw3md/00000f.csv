@@ -1,0 +1,3 @@
+"0",""
+"0","auto <- read.table(""Auto.data"", header = TRUE, na.strings = ""?"")"
+"0",""

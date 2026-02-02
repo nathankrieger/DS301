@@ -1,0 +1,4 @@
+"0",""
+"0","raw_data <- read.table(file.choose(), header = TRUE)"
+"2","Error in file.choose() : file choice cancelled
+"

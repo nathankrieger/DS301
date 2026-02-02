@@ -1,0 +1,215 @@
+---
+title: "HW2"
+author: "Nathan Krieger"
+date: "2026-01-30"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 1
+
+## (a)
+
+$\hat{\beta}x_i = \hat{\alpha}z_i$
+$\hat{\beta} = c\hat{\alpha}$
+
+$\hat{\alpha}_j = \frac{\hat{\beta}_j}{c}$
+
+
+## (b)
+
+
+
+## (c)
+
+
+
+## (d)
+
+I would say this is incorrect because the student forgot the $\epsilon$.
+
+## (e)
+
+False. You can make the training model whatever size you want.
+
+## (f)
+
+Unbiased means that if you did the experiment a large amount of times and calculate $\hat{\beta}$ for each of those times, the average of all the estimates would exactly equal ${\beta}$.
+
+# Problem 2
+
+``` {r}
+
+#install.packages("ISLR2") #you only need to do this one time.
+library(ISLR2) #you will need to do this every time you open a new R session.
+
+```
+
+## (a)
+
+``` {r}
+
+head(Boston)
+
+set.seed(1)
+
+n <- nrow(Boston)
+
+train_index <- sample(1:n, floor(n / 2), replace = FALSE)
+
+
+train_boston <- Boston[train_index, ]
+test_boston <- Boston[-train_index, ]
+
+m1 <- lm(crim ~ ., data = train_boston)
+
+summary(m1)
+
+trainMSE <- sum(m1$residuals^2)/nrow(train_boston)
+
+trainMSE
+
+test_predict <- predict(m1, newdata = test_boston)
+
+test_MSE <- mean((test_predict - test_boston$crim)^2)
+
+test_MSE
+
+```
+
+## (b)
+
+``` {r}
+
+set.seed(1)
+
+n <- nrow(Boston)
+
+train_index <- sample(1:n, floor(n / 2), replace = FALSE)
+
+
+train_boston <- Boston[train_index, ]
+test_boston <- Boston[-train_index, ]
+
+m1 <- lm(crim ~ zn + indus + nox + dis + rad + ptratio + medv, data = train_boston)
+
+summary(m1)
+
+trainMSE <- sum(m1$residuals^2)/nrow(train_boston)
+
+trainMSE
+  
+test_predict <- predict(m1, newdata = test_boston)
+
+test_MSE <- mean((test_predict - test_boston$crim)^2)
+
+test_MSE
+
+```
+
+The training MSE collected from part A was slightly smaller than the one from part B.
+The test MSE collected from part A was slightly larger than the one from part B.
+
+## (c)
+
+I expected part b to have a larger MSE because it is being trained on less variables so it's not likely to be as good as part a that was trained on every variable.
+
+## (d)
+
+
+
+# Problem 3
+
+## (a)
+
+${\beta}_0 = 2$
+${\beta}_1 = 3$
+${\beta}_2 = 5$
+
+## (b)
+
+
+``` {r}
+
+set.seed(1) # For reproducibility
+X1 = seq(0, 10, length.out = 100)
+X2 = runif(100)
+epsilon = rnorm(100, mean = 0, sd = 1)
+
+Y = 2 + 3*X1 + 5*log(X2) + epsilon
+Y
+```
+
+## (c)
+
+``` {r}
+
+par(mfrow=c(1,2))
+plot(X1, Y, main="X1 vs Y", col="blue", pch=19)
+plot(X2, Y, main="X2 vs Y", col="darkgreen", pch=19)
+
+```
+
+## (d)
+
+``` {r}
+
+n_sim <- 10000
+beta1_hats <- rep(NA, n_sim)
+
+for(i in 1:n_sim) {
+  # We generate new noise each time to simulate a new sample
+  eps_sim <- rnorm(100, 0, 1)
+  Y_sim <- 2 + 3*X1 + 5*log(X2) + eps_sim
+  
+  # Fit the model (using log(X2) since that is the true relationship)
+  fit <- lm(Y_sim ~ X1 + log(X2))
+  beta1_hats[i] <- coef(fit)[2]
+}
+
+mean(beta1_hats)
+
+```
+
+## (e)
+
+
+``` {r}
+
+hist(beta1_hats, breaks=30, col="skyblue", main="Sampling Distribution of Beta1")
+abline(v = 3, col = "red", lwd = 3) # The true Beta1
+
+```
+## (f)
+
+
+``` {r}
+
+beta2_hats <- rep(NA, n_sim)
+
+for(i in 1:n_sim) {
+  eps_sim <- rnorm(100, 0, 1)
+  Y_sim <- 2 + 3*X1 + 5*log(X2) + eps_sim
+  fit <- lm(Y_sim ~ X1 + log(X2))
+  beta2_hats[i] <- coef(fit)[3]
+}
+
+mean(beta2_hats)
+
+
+```
+
+## (g)
+
+``` {r}
+
+hist(beta2_hats, breaks=30, col="lightgreen", main="Sampling Distribution of Beta2")
+abline(v = 5, col = "red", lwd = 3) # The true Beta2
+
+```
+

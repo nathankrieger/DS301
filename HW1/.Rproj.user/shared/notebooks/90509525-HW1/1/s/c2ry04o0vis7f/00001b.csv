@@ -1,0 +1,2 @@
+"0",""
+"0","Boston[Boston$crim >= quantile(Boston$crim, 0.98), ]"

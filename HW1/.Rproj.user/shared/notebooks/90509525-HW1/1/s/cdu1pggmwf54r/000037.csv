@@ -1,0 +1,6 @@
+"0",""
+"0",""
+"0","plot(Boston$rad, Boston$crim,"
+"0","     xlab = ""Accessibility to Radial Highways (rad)"","
+"0","     ylab = ""Per Capita Crime Rate"","
+"0","     main = ""Crime Rate vs Highway Accessibility"")"

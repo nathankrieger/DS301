@@ -1,0 +1,5 @@
+"0",""
+"0","boxplot(crim ~ chas, data = Boston,"
+"0","        xlab = ""Bounds Charles River (chas)"","
+"0","        ylab = ""Per Capita Crime Rate"","
+"0","        main = ""Crime Rate by Charles River Proximity"")"

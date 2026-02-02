@@ -1,0 +1,1 @@
+{"frames":[{"func":"read.table(file.choose(), header = TRUE)","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0},{"func":"file.choose()","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error : object 'comp' not found\n"}

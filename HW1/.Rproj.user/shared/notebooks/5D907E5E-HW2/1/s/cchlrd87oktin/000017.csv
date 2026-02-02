@@ -1,0 +1,3 @@
+"0",""
+"0","par(mfrow=c(1,2))"
+"0","plot(X1, Y, main=""X1 vs Y"", col=""blue"", pch=19)"

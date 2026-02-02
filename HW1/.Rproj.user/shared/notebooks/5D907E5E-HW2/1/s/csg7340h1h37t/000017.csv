@@ -1,0 +1,2 @@
+"0",""
+"0","hist(beta2_hats, breaks=30, col=""lightgreen"", main=""Sampling Distribution of Beta2"")"

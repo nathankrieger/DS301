@@ -1,0 +1,5 @@
+"0",""
+"0","# install.packages(""ISLR2"")"
+"0","library(ISLR2)"
+"0",""
+"0","head(Boston)"

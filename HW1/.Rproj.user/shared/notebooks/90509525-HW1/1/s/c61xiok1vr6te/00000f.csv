@@ -1,0 +1,6 @@
+"0",""
+"0","mean(auto_clean$mpg[auto_clean$horsepower < 200])"
+"1","[1]"
+"1"," 23.75801"
+"1","
+"

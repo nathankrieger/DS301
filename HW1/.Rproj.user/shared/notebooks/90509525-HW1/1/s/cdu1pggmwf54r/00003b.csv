@@ -1,0 +1,5 @@
+"0",""
+"0","plot(Boston$rm, Boston$crim,"
+"0","     xlab = ""Average Number of Rooms (rm)"","
+"0","     ylab = ""Per Capita Crime Rate"","
+"0","     main = ""Crime Rate vs Number of Rooms"")"

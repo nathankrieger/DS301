@@ -1,0 +1,5 @@
+"0",""
+"0","boxplot(acceleration ~ year, data = auto_clean,"
+"0","xlab = ""Year"", ylab = ""Acceleration"","
+"0","main = ""Acceleration by Model Year"")"
+"0",""

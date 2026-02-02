@@ -1,0 +1,5 @@
+"0",""
+"0","plot(Boston$medv, Boston$crim,"
+"0","     xlab = ""Median Home Value (medv)"","
+"0","     ylab = ""Per Capita Crime Rate"","
+"0","     main = ""Crime Rate vs Median Home Value"")"

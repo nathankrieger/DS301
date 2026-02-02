@@ -1,0 +1,373 @@
+---
+title: "HW1"
+author: "Nathan Krieger"
+date: "2026-01-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyr)
+
+```
+
+
+# Problem 1
+
+```{r}
+
+auto <- read.table("Auto.data", header = TRUE, na.strings = "?")
+
+```
+
+## (a)
+
+``` {r}
+
+nrow(auto)
+ncol(auto)
+
+```
+
+- There are 397 rows and 9 columns.
+
+## (b)
+
+``` {r}
+
+auto_clean <- drop_na(auto)
+
+nrow(auto_clean)
+ncol(auto_clean)
+
+```
+
+- After cleaning, it dropped 5 observations.
+
+## (c)
+
+``` {r}
+
+str(auto_clean)
+
+```
+
+- There are no variables stored as a factor data type but the column origin is stored as a factor. Factors in R are categorical variables that take on a limited number of distinct values.
+
+## (d)
+
+``` {r}
+
+# auto_clean
+
+```
+
+- No because there are too many names for vehicles. Also, storing name as a factor doesn't help prediction as much as HP or other variables.
+
+
+## (e)
+
+``` {r}
+
+head(auto_clean, 10)
+
+```
+
+- head(auto_clean, 10)
+
+## (f)
+
+``` {r}
+
+auto_clean[c(10, 14, 29), ]
+
+```
+
+## (g)
+
+``` {r}
+
+auto_clean[c(10, 14, 29), c("displacement", "horsepower")]
+
+```
+
+## (h)
+
+``` {r}
+
+mean(auto_clean$mpg[auto_clean$horsepower < 200])
+
+```
+
+- 23.75801
+
+## (i)
+
+``` {r}
+
+plot(auto_clean$horsepower, auto_clean$mpg,
+xlab = "Horsepower", ylab = "MPG",
+main = "MPG vs Horsepower")
+
+```
+
+## (j)
+
+```{r}
+
+boxplot(acceleration ~ year, data = auto_clean,
+xlab = "Year", ylab = "Acceleration",
+main = "Acceleration by Model Year")
+
+```
+
+## (k)
+
+- Vectorized means you can give a function a whole list of numbers at once, and it will automatically do the calculation on each value, without you having to repeat the instruction. It’s like using a specialized stamp that hits every row at once instead of writing on them one by one with a pen. It makes the code much faster and easier to read.
+
+# Problem 2
+
+``` {r}
+
+# install.packages("ISLR2")
+library(ISLR2)
+
+head(Boston)
+
+```
+
+## (a)
+
+``` {r}
+
+nrow(Boston)
+ncol(Boston)
+
+```
+- There are 506 rows and 13 columns
+
+## (b)
+
+``` {r}
+
+ # ?Boston
+
+
+```
+
+- lower status of the population (percent).
+
+## (c)
+
+``` {r}
+
+mean(Boston$crim)
+
+```
+- 3.613524
+
+## (d)
+
+``` {r}
+
+mean(Boston$crim[Boston$chas == 0])
+
+mean(Boston$crim[Boston$chas == 1])
+
+```
+- The crime rate is 3.7 where chas = 0, and 1.85 where chas = 1. This means it is much safer to live near the river.
+
+## (e)
+
+``` {r}
+
+summary(Boston$crim)
+
+Boston[Boston$crim > quantile(Boston$crim, 0.75), ]
+
+Boston[Boston$crim >= quantile(Boston$crim, 0.98), ]
+
+
+```
+
+- There are many cities with high crime rates. I used Q3 as an indicator for this as seen in my code. I also explored the top 2% where 13 observations exist. The highest crime rate is 88.9762.
+
+## (f)
+
+``` {r}
+
+pairs(Boston[, c("crim", "lstat", "rm", "dis")])
+
+r_vals <- sapply(Boston[, -which(names(Boston) == "crim")],
+                 function(x) cor(x, Boston$crim))
+
+r_vals
+
+```
+
+- Using pairs, I see correlations in several areas. I also looked at all the correlation values, based on this, nox, rad, tax, and lstat have particularly high correlations. This is interesting because nox is the nitrogen oxide concentration. This is a good example of correlation not equalling causation. 
+
+## (g)
+
+``` {r}
+
+model_simple <- lm(crim ~ lstat, data = Boston)
+summary(model_simple)
+
+
+```
+
+- Intercept coef = -3.33
+- Slope coef = 0.55
+
+- Based on these results it's clear that there is a significant correlation between lstat and crime rate.
+
+## (h)
+
+``` {r}
+
+predictors <- setdiff(names(Boston), "crim")
+
+results_list <- lapply(predictors, function(var) {
+  fit <- lm(as.formula(paste("crim ~", var)), data = Boston)
+  
+  data.frame(
+    variable = var,
+    estimate = coef(summary(fit))[2, 1],
+    p_value = coef(summary(fit))[2, 4]
+  )
+})
+
+simple_results_df <- do.call(rbind, results_list)
+print(simple_results_df)
+
+```
+
+- Positive correlation: indus, nox, age, rad, tax, ptratio, lstat
+- Negative correlation: zn, rm, dis, medv
+- Statistically significant predictors: using the 5% significance level, all predictors other than chas show significance.
+
+- Plots:
+
+``` {r}
+
+plot(Boston$lstat, Boston$crim,
+     xlab = "Percent Lower Status (lstat)",
+     ylab = "Per Capita Crime Rate",
+     main = "Crime Rate vs Lower Status Population")
+abline(lm(crim ~ lstat, data = Boston))
+
+
+plot(Boston$rad, Boston$crim,
+     xlab = "Accessibility to Radial Highways (rad)",
+     ylab = "Per Capita Crime Rate",
+     main = "Crime Rate vs Highway Accessibility")
+abline(lm(crim ~ rad, data = Boston))
+
+plot(Boston$rm, Boston$crim,
+     xlab = "Average Number of Rooms (rm)",
+     ylab = "Per Capita Crime Rate",
+     main = "Crime Rate vs Number of Rooms")
+abline(lm(crim ~ rm, data = Boston))
+
+plot(Boston$medv, Boston$crim,
+     xlab = "Median Home Value (medv)",
+     ylab = "Per Capita Crime Rate",
+     main = "Crime Rate vs Median Home Value")
+abline(lm(crim ~ medv, data = Boston))
+
+boxplot(crim ~ chas, data = Boston,
+        xlab = "Bounds Charles River (chas)",
+        ylab = "Per Capita Crime Rate",
+        main = "Crime Rate by Charles River Proximity")
+
+
+```
+
+## (i)
+
+```{r}
+
+model_multi <- lm(crim ~ ., data = Boston)
+
+multi_table <- as.data.frame(summary(model_multi)$coefficients)
+
+colnames(multi_table) <- c("Estimate", "Std. Error", "t value", "Pr(>|t|)")
+
+round(multi_table, 4)
+
+```
+- Results shown in the output table above.
+
+
+## (j)
+
+```{r}
+
+simple_coeffs <- simple_results_df$estimate
+multi_coeffs <- coef(model_multi)[-1]
+
+plot(simple_coeffs, multi_coeffs, 
+     pch = 19, col = "blue",
+     xlab = "simple Regression Coefficients", 
+     ylab = "Multiple Regression Coefficients",
+     main = "Simple vs. Multiple Regression Coefficients")
+
+abline(0, 1, col = "red", lwd = 2, lty = 2)
+
+text(simple_coeffs, multi_coeffs, labels = names(multi_coeffs), 
+     pos = 4, cex = 0.7, col = "darkgray")
+
+```
+
+The graph shows most results land around the 45 degree line. I also see an outlier with a high x and a low y value.
+
+## (k)
+
+- Part J shows us that multiple regression coefficients are superior to a simple regression in this case. For most of the variables, a simple model is good, but nox highlights the weakness of the simple model and is clearly an outlier on the graph. A multiple linear regression model will filter out the results that correlate but do not cause the relationship.
+
+# Problem 3
+
+## (a)
+
+- Answer ii is correct. 
+
+We know y = 50 + 20x1 + 0.07x2 + 35x2
+
+If we hold IQ and GPA constant, the only difference in the predicted salary is x2
+
+For a college graduate 35(1) = 35
+For a high school graduate 35(0) = 0
+
+So a college graduate will make 35k more than a high school graduate according to this model.
+
+## (b)
+
+- IQ = 110, GPA = 4
+y = 50 + 20x1 + 0.07x2 + 35x2
+
+y = 50 + 20(4) + 0.07(110) + 35(1)
+
+y = 50 + 80 + 7.7 + 35
+= 172.7 -> $172,700
+
+## (c)
+
+NOTE: The answer to this question depends on what you consider important. Each IQ point represents 70$ a year.
+
+Statistically FALSE: a small coefficient is not inherently unimportant.
+
+We can look at 2 different cases with IQs of 80 and 130, other variables fixed.
+
+GPA = 4, college graduate
+
+y1 = 50 + 20(4) + 0.07(80) + 35(1)
+y1 = 170.6
+
+y2 = 50 + 20(4) + 0.07(130) + 35(1)
+y2 = 174.1
+
+Having a 50 point difference in IQ leads to an extra 3.5k in this case which is not an insignificant amount of money. Thus IQ is statistically useful for predicting income. 
+
+
