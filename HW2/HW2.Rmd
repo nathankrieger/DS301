@@ -16,18 +16,25 @@ knitr::opts_chunk$set(echo = TRUE)
 ## (a)
 
 $\hat{\beta}x_i = \hat{\alpha}z_i$
+
 $\hat{\beta} = c\hat{\alpha}$
 
-$\hat{\alpha}_j = \frac{\hat{\beta}_j}{c}$
+$\hat{\alpha}_j = \frac{\hat{\beta}_j}{c}$ for j = 1 to p
 
 
 ## (b)
 
-
+No it is not necessary. The least squares estimates automatically adjust the scale to compensate for the units. The fit of the model will be the same.
 
 ## (c)
 
+Linearity: The relationship between the independent variables and the dependent variable follows a straight-line pattern.
 
+Independence: The data points are collected independently; one person's data doesn't influence another's.
+
+Homoscedasticity (Constant Variance): The "spread" or "scatter" of the errors is the same across all levels of your predictors.
+
+Normality: For any given value of X, the errors (residuals) should follow a bell-shaped curve.
 
 ## (d)
 
@@ -35,9 +42,9 @@ I would say this is incorrect because the student forgot the $\epsilon$.
 
 ## (e)
 
-False. You can make the training model whatever size you want.
+False. You can make the training model whatever size you want. The training model is usually smaller but this is not required.
 
-## (f)
+## (f) TODO
 
 Unbiased means that if you did the experiment a large amount of times and calculate $\hat{\beta}$ for each of those times, the average of all the estimates would exactly equal ${\beta}$.
 
@@ -121,6 +128,7 @@ I expected part b to have a larger MSE because it is being trained on less varia
 
 ## (d)
 
+I expected the test MSE for part b to be larger than part a because removing predictors usually increases bias. However, if some predictors in part a were just noise, part b could potentially have a smaller test MSE. In my case, part b was actually slightly better, suggesting some variables in part (a) weren't helpful for generalization.
 
 
 # Problem 3
