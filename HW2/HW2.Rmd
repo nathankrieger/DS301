@@ -30,11 +30,11 @@ No it is not necessary. The least squares estimates automatically adjust the sca
 
 Linearity: The relationship between the independent variables and the dependent variable follows a straight-line pattern.
 
-Independence: The data points are collected independently; one person's data doesn't influence another's.
+Independence: The data points are collected independently so one person's data doesn't influence another.
 
-Homoscedasticity (Constant Variance): The "spread" or "scatter" of the errors is the same across all levels of your predictors.
+Homoscedasticity: The spread or scatter of the errors is the same across all levels of predictors.
 
-Normality: For any given value of X, the errors (residuals) should follow a bell-shaped curve.
+Normality: For any value of X, the errors should follow a bell-shaped curve.
 
 ## (d)
 
@@ -44,9 +44,11 @@ I would say this is incorrect because the student forgot the $\epsilon$.
 
 False. You can make the training model whatever size you want. The training model is usually smaller but this is not required.
 
-## (f) TODO
+## (f)
 
-Unbiased means that if you did the experiment a large amount of times and calculate $\hat{\beta}$ for each of those times, the average of all the estimates would exactly equal ${\beta}$.
+Unbiased means that on average the model will get the right answer.
+
+If you were to take thousands of different random samples from the same population and calculate $\hat{\beta}$ for each one, the average of all those different estimates would equal the true population value $\beta$.
 
 # Problem 2
 
@@ -93,15 +95,6 @@ test_MSE
 
 ``` {r}
 
-set.seed(1)
-
-n <- nrow(Boston)
-
-train_index <- sample(1:n, floor(n / 2), replace = FALSE)
-
-
-train_boston <- Boston[train_index, ]
-test_boston <- Boston[-train_index, ]
 
 m1 <- lm(crim ~ zn + indus + nox + dis + rad + ptratio + medv, data = train_boston)
 
@@ -128,7 +121,7 @@ I expected part b to have a larger MSE because it is being trained on less varia
 
 ## (d)
 
-I expected the test MSE for part b to be larger than part a because removing predictors usually increases bias. However, if some predictors in part a were just noise, part b could potentially have a smaller test MSE. In my case, part b was actually slightly better, suggesting some variables in part (a) weren't helpful for generalization.
+I expected the test MSE for part b to be larger than part a because removing predictors usually increases bias. However, if some predictors in part a were just noise, part b could potentially have a smaller test MSE. In my case, part b was slightly better, this means that some variables in part a weren't helpful for generalization.
 
 
 # Problem 3
@@ -162,6 +155,9 @@ plot(X1, Y, main="X1 vs Y", col="blue", pch=19)
 plot(X2, Y, main="X2 vs Y", col="darkgreen", pch=19)
 
 ```
+
+X1 and Y clearly have a positive linear relationship. Also, the graph between X2 and Y shows a much more noisy relationship but slightly resembles a logarithmic relationship.
+
 
 ## (d)
 
