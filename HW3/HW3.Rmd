@@ -9,22 +9,170 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+``` {r}
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+library(ISLR2)
+#head(Carseats)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
+# Problem 1
 
-You can also embed plots, for example:
+## (a)
+### (i)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+
+head(Carseats)
+
+
+m1 <- lm(Sales ~ Sales + CompPrice + Income +Advertising + Population + Price + Age + Education + Urban + US, data=Carseats)
+
+summary(m1)$coefficients
+
+#summary_table <- summary(m1)$coefficients
+#print(summary_table)
+
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+### (ii)
+
+Null hypothesis (H0): The CompPrice of the car seat has zero effect on the sale of the car seats
+
+Alternative hypothesis (H1): The CompPrice of the car seat has an effect on the sale of the car seats
+
+Test statistic: 
+``` {r}
+
+comp_price_t_val <- summary(m1)$coefficients["CompPrice", "t value"]
+
+print(comp_price_t_val)
+
+```
+
+
+```{r}
+
+comp_price_p_val <- summary(m1)$coefficients["CompPrice", "Pr(>|t|)"]
+
+print(comp_price_p_val)
+
+```
+
+
+
+Since the p-value is less than $\alpha=0.05$ (2.131214e-28), we reject the null hypothesis and conclude that CompPrice has a statistically significant relationship with car seat Sales.
+
+# TODO: NULL DISTRIBUTION
+
+## (b)
+
+I needed to assume the $\epsilon$ (errors) are normally distributed.
+
+## (c)
+
+```{r}
+
+summary(m1)$sigma^2
+
+```
+
+$\hat{\sigma}^2 = 3.732624$ 
+
+This is the estimated variance of the error term. It represents the average squared deviation of the actual sales values from the predicted regression line.
+
+## (d)
+
+```{r}
+
+summary(m1)$coefficients["Advertising", ]
+
+```
+
+## (e)
+## (f)
+## (g)
+## (h)
+## (i)
+## (j)
+## (k)
+
+
+# Problem 2
+
+## (a)
+
+$m * \alpha$
+
+
+## (b)
+
+``` {r}
+
+set.seed(123)
+n = 1000  # Number of observations
+p_test = c(200, 400, 500, 600, 800)
+alpha = 0.05
+
+false_positives <- c()
+
+for (p in p_test) {
+  x <- matrix(rnorm(n * p), n, p)
+  y <- rnorm(n)
+  
+  data <- as.data.frame(x)
+  
+  model <- lm(y ~ ., data = data)
+  
+  #Step 6: Extract p-values for all predictors
+  p_values <- summary(model)$coefficients[-1,4]  # use -1 to Remove intercept
+  
+  #Step 7: Count number of significant predictors at 0.05 level
+  significant_count = sum(p_values < alpha)
+  # or 
+  false_positives <- c(false_positives, significant_count)
+}
+
+plot(p_test, false_positives, type="b",
+     xlab = "# of tests carried out",
+     ylab = "# of of false positives"
+)
+
+```
+
+# Problem 3
+
+## (a)
+
+$\hat{\beta}_0 = 2$
+$\hat{\beta}_1 = 3$
+$\hat{\beta}_2 = 5$
+
+## (b)
+
+```{r}
+
+X1 = seq(0,10,length.out =100) #generates 100 equally spaced values from 0 to 10.
+X2 = runif(100) #generates 100 uniform values.
+
+```
+
+## (c)
+## (d)
+## (e)
+
+# Problem 4
+
+## (a)
+
+In plain language, setting the significance level to a = 0.05 means that before we look at the data, we are deciding that we’re willing to accept a 5% chance of making a false alarm.
+
+## (b)
+
+I would disagree with that claim. This is because not significant is not the same as no effect. 
+
+## (c)
+
