@@ -25,14 +25,11 @@ library(ISLR2)
 
 head(Carseats)
 
-
 m1 <- lm(Sales ~ CompPrice + Income +Advertising + Population + Price + Age + Education + Urban + US, data=Carseats)
 
 summary(m1)$coefficients
 
 ```
-
-# TODO: NO RAW R
 
 
 
@@ -185,6 +182,8 @@ predict(m1, newdata = new_X, interval = "confidence", level = 0.95)
 ```
 
 
+The estimate is 15.807. 14.9 is the lower bound and 16.7 is the upper bound.
+
 ## (h)
 
 ``` {r}
@@ -194,7 +193,46 @@ predict(m1, newdata = new_X, interval = "prediction", level = 0.95)
 
 ```
 
+The sources that need to be reflected in the interval are reducable and irreducable.
+
+The estimate of 15.807 stays the same but the interval changes. 11.9 is the lower bound and 19.7 is the upper bound.
+
 ## (i)
+
+Claim: $F(X) = E(\hat{Y})$ for fixed values of X.
+
+Proof: 
+Consider the multiple regression model:
+$Y = X\beta + \epsilon$
+
+X is the fixed design matrix
+$\beta$ is the vector of regression coefficients
+$\epsilon$ is the error vector satisfying
+
+$E(\epsilon) = 0, Var(\epsilon) = \sigma^2I$
+
+We define regression function
+
+$f(X) = X\beta$
+
+Taking expectations of Y which is conditional on fixed X
+
+$E(Y | X) = E(X\beta + \epsilon | X)$
+
+By linearity of expectation
+
+$E(Y | X)= X\beta + E(\epsilon | X)$
+
+But $E(\epsilon | X) = 0$
+
+So
+
+$E(Y | X)= X\beta = f(X)$
+
+$X is fixed, E(Y|X) = E(Y)$
+Therefore
+$f(X) = E(Y)$
+
 ## (j)
 
 
@@ -208,9 +246,25 @@ predict(m1, newdata = new_X_high_price)
 
 ```
 
-# TODO: Add words
+So when the car seat sales price is $450 the predicted number of units sold is -21.16873 which is not possible because it is negative. This shows the a limitation of the model because its assuming there is a linear relationship between the price of car seats and the number sold which is not always the case. A lower bound of \$0 should be put in place because price cannot go negative.
 
 ## (k)
+
+No. $\hat{Y}$ is not an unbiased estimator of Y.
+
+Assume $E(\hat{Y}) = Y$
+
+Then, $\hat{Y} = \hat{\beta}_0 + \hat{\beta}_1 * X_1 + ... + \hat{\beta}_p * X_p$
+
+But Y needs an error term
+
+$Y = {\beta}_0 + {\beta}_1 * X_1 + ... + {\beta}_p * X_p + \epsilon$
+
+So, Y has an error term and $\hat{Y}$ doesn't
+
+Therefore
+
+$E(\hat{Y}) \neq Y$
 
 
 # Problem 2
@@ -255,6 +309,8 @@ plot(p_test, false_positives, type="b",
 
 ```
 
+The number of false positives changing based on the amount of tests is clearly represented by the graph above. It looks like as the number of tests increase, the number of false positives increase also. However, there is a clear spike when 400 tests are carried out.
+
 # Problem 3
 
 ## (a)
@@ -286,11 +342,11 @@ Y
 
 set.seed(123)
 
-B <- 1000
+B <- 100
 sigma2_hat <- numeric(B)
 
 for (b in 1:B) {
-  epsilon <- rnorm(100, sd = 2)
+  epsilon <- rnorm(100, 0, 2)
   Y <- 2 + 3*X1 + 5*X2 + epsilon
   
   model <- lm(Y ~ X1 + X2)
@@ -301,8 +357,30 @@ mean(sigma2_hat)
 
 ```
 
+I am getting a mean very close to 4.
+
 ## (d)
+
+
+``` {r}
+
+hist(sigma2_hat,
+     breaks = 50,
+     main = expression("Distribution of " * hat(sigma)^2),
+     xlab = expression(hat(sigma)^2))
+
+abline(v = 4, col = "red", lwd = 2)
+
+
+```
+
 ## (e)
+
+
+An accurate estimate of $\sigma^2$ is important in multiple linear regression because it directly affects the standard errors of the regression coefficients. The standard errors are used to make confidence intervals, do hypothesis tests, and make prediction intervals.
+
+If $\hat\sigma^2$ is not well estimated, then standard errors will be incorrect, which leads to improper interpretation. The entire statistical inference pipeline breaks down.
+
 
 # Problem 4
 
