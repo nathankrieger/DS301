@@ -2,7 +2,10 @@
 title: "HW3"
 author: "Nathan Krieger"
 date: "2026-02-06"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -23,11 +26,12 @@ library(ISLR2)
 
 ```{r}
 
-head(Carseats)
+knitr::kable(head(Carseats))
 
 m1 <- lm(Sales ~ CompPrice + Income +Advertising + Population + Price + Age + Education + Urban + US, data=Carseats)
 
-summary(m1)$coefficients
+#summary(m1)$coefficients
+knitr::kable(summary(m1)$coefficients)
 
 ```
 
@@ -46,7 +50,7 @@ Test statistic:
 
 comp_price_t_val <- summary(m1)$coefficients["CompPrice", "t value"]
 
-print(comp_price_t_val)
+knitr::kable(comp_price_t_val)
 
 ```
 
@@ -88,7 +92,7 @@ I needed to assume the $\epsilon$ (errors) are normally distributed in the t-tes
 
 ```{r}
 
-summary(m1)$sigma^2
+knitr::kable(summary(m1)$sigma^2)
 
 ```
 
@@ -96,15 +100,17 @@ $\hat{\sigma}^2 = 3.732624$
 
 This is the estimated variance of the error term. It represents the average squared deviation of the actual sales values from the predicted regression line.
 
+More simple: It is how far away the real value is from the predicted value.
+
 ## (d)
 
 ```{r}
 
-summary(m1)$coefficients["Advertising", ]
+knitr::kable(summary(m1)$coefficients["Advertising", ])
 
 ```
 
-This data shows that for each additional increment of $1000 spent on advertising, the expected number of car seats sold increases by around 137.
+Holding all other variables fixed, an increase of $1,000 in advertising is associated with an increase of approximately 0.137 thousand units (about 137 units) in expected car seat sales.
 
 ## (e)
 
@@ -116,18 +122,20 @@ rss_full <- sum(resid(m1)^2)
 m0 <- lm(Sales ~ 1, data = Carseats)
 rss_reduced <- sum(resid(m0)^2)
 
-rss_full
-rss_reduced
+knitr::kable(rss_full)
+knitr::kable(rss_reduced)
 
 ```
 
+RSS for the full model: 1456.031
+
+RSS for the reduced model: 3182.275
 
 ## (f)
 
 ``` {r}
 
-anova(m0, m1)
-
+knitr::kable(anova(m0, m1))
 
 ```
 
@@ -176,7 +184,7 @@ new_X <- data.frame(
 )
 
 # Confidence interval for f(X)
-predict(m1, newdata = new_X, interval = "confidence", level = 0.95)
+knitr::kable(predict(m1, newdata = new_X, interval = "confidence", level = 0.95))
 
 
 ```
@@ -189,7 +197,7 @@ The estimate is 15.807. 14.9 is the lower bound and 16.7 is the upper bound.
 ``` {r}
 
 # Prediction interval for Y
-predict(m1, newdata = new_X, interval = "prediction", level = 0.95)
+knitr::kable(predict(m1, newdata = new_X, interval = "prediction", level = 0.95))
 
 ```
 
@@ -229,9 +237,10 @@ So
 
 $E(Y | X)= X\beta = f(X)$
 
-$X is fixed, E(Y|X) = E(Y)$
+Since $X$ is fixed, $E(Y \mid X) = E(Y)$.
+
 Therefore
-$f(X) = E(Y)$
+$f(X) = E(\hat{Y})$
 
 ## (j)
 
@@ -241,7 +250,7 @@ $f(X) = E(Y)$
 new_X_high_price <- new_X
 new_X_high_price$Price <- 450
 
-predict(m1, newdata = new_X_high_price)
+knitr::kable(predict(m1, newdata = new_X_high_price))
 
 
 ```
@@ -250,15 +259,15 @@ So when the car seat sales price is $450 the predicted number of units sold is -
 
 ## (k)
 
-No. $\hat{Y}$ is not an unbiased estimator of Y.
+No. $\hat{Y}$ is not an unbiased estimator of the actual observed Y because Y includes an error term that $\hat{Y}$ cannot predict.
 
 Assume $E(\hat{Y}) = Y$
 
-Then, $\hat{Y} = \hat{\beta}_0 + \hat{\beta}_1 * X_1 + ... + \hat{\beta}_p * X_p$
+Then, $\hat{Y} = \hat{\beta}_0 + \hat{\beta}_1 * X_1 + \cdots + \hat{\beta}_p * X_p$
 
 But Y needs an error term
 
-$Y = {\beta}_0 + {\beta}_1 * X_1 + ... + {\beta}_p * X_p + \epsilon$
+$Y = {\beta}_0 + {\beta}_1 * X_1 + \cdots + {\beta}_p * X_p + \epsilon$
 
 So, Y has an error term and $\hat{Y}$ doesn't
 
@@ -309,15 +318,15 @@ plot(p_test, false_positives, type="b",
 
 ```
 
-The number of false positives changing based on the amount of tests is clearly represented by the graph above. It looks like as the number of tests increase, the number of false positives increase also. However, there is a clear spike when 400 tests are carried out.
+The number of false positives changing based on the amount of tests is clearly represented by the graph above. It looks like as the number of tests increase, the number of false positives increase also. However, there is a clear spike when 400 tests are carried out. In general it is safe to say that as the number of tests increase so does the number of false positives.
 
 # Problem 3
 
 ## (a)
 
-$\hat{\beta}_0 = 2$
-$\hat{\beta}_1 = 3$
-$\hat{\beta}_2 = 5$
+$\beta_0 = 2$
+$\beta_1 = 3$
+$\beta_2 = 5$
 
 ## (b)
 
@@ -353,7 +362,7 @@ for (b in 1:B) {
   sigma2_hat[b] <- summary(model)$sigma^2
 }
 
-mean(sigma2_hat)
+knitr::kable(mean(sigma2_hat))
 
 ```
 
