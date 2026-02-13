@@ -61,7 +61,7 @@ m1$fitted.values
 
 # Extract residuals: observed y - fitted y
 
-
+m1$residuals
 
 ########################
 # 5) Prediction examples
@@ -69,7 +69,13 @@ m1$fitted.values
 
 # Predict satisfaction for a new patient with specific predictor values
 
+age <- 1
+severe <- 2
+anxiety <- 3
 
+new_patient <- data.frame(age, severe, anxiety)
+
+new_patient
 
 
 ############################################################
