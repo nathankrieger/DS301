@@ -1,0 +1,103 @@
+---
+title: "HW4"
+author: "Nathan Krieger"
+date: "2026-02-17"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Problem 1
+
+## (a)
+
+Hypothesis testing is valuable here because while the summary shows us that the estimate is non-zero, it doesn't mean that the predictor $X_3$ actually influences $Y$. It would be rare to see an estimate that is truly zero due to noise. 
+
+We can use hypothesis testing to determine if the estimate is a real signal or just random luck.
+
+In the case of $X_3$, the estimate is non-zero, but the P-value is 0.334 which is much higher than the $\alpha = 0.05$ threshold, therefore, $X_3$ is not a good predictor of $Y$
+  
+## (b)
+
+I disagree with this claim. Even if we knew the true $f(X)$, there is still error ($\epsilon$) that we cannot predict. 
+
+$Y = f(X) + \epsilon$
+
+## (c)
+
+False. The expected test MSE is evaluated based on the data $(x_0, y_0)$ that's not part of the training set.
+
+## (d)
+
+True. Sometimes a model that is too complex can overfit the noise. If we remove a predictor we may increase bias but also decrease the variance. This leads to a better test MSE.
+
+## (e)
+
+False. The expected test MSE includes $Var(\epsilon)$ so theres no way it can be smaller than it.
+
+## (f)
+
+True. We could fit a model to be exactly the same (overfitting) which can get rid of the irreducable error.
+
+# Problem 2
+
+## (a)
+
+## (b)
+## (c)
+## (d)
+## (e)
+
+# Problem 3
+
+# Problem 4
+
+## (a)
+## (b)
+
+### (i)
+### (ii)
+
+## (c)
+
+``` {r}
+
+set.seed(1)
+x = rnorm(100)
+error = rnorm(100)
+y = x - 2*x^2 + error
+
+```
+
+
+## (d)
+
+``` {r}
+# TODO - set random seed
+
+M1 <- lm(y ~ x)
+
+M2 <- lm(y ~ poly(x, degree = 2, raw = TRUE))
+
+M3 <- lm(y ~ poly(x, degree = 3, raw = TRUE))
+
+M4 <- lm(y ~ poly(x, degree = 4, raw = TRUE))
+
+```
+
+
+## (e)
+## (f)
+## (g)
+## (h)
+## (i)
+
+``` {r}
+
+```

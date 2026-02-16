@@ -18,9 +18,8 @@ n <- nrow(patient)
 
 ## 2) divide our data into a training set and a test set (50% training, 50% testing)
 
-sample(1:100,10)
+#sample(1:100,10)
 train_index <- sample(1:n, floor(n / 2), replace = FALSE)
-
 
 
 # Create training and testing datasets
