@@ -39,11 +39,13 @@ True. Sometimes a model that is too complex can overfit the noise. If we remove 
 
 ## (e)
 
-False. The expected test MSE includes $Var(\epsilon)$ so theres no way it can be smaller than it.
+False. The expected test MSE includes $Var(\epsilon)$ so there's no way it can be smaller than it.
+
+From the slides: "The expected test MSE is never smaller than the irreducible error."
 
 ## (f)
 
-True. We could fit a model to be exactly the same (overfitting) which can get rid of the irreducable error.
+True. We could fit a model to be exactly the same (overfitting) which can effectively cover all points exactly, making the training MSE = 0 which is less than the irreducible error. 
 
 # Problem 2
 
@@ -90,13 +92,11 @@ Irreducible Error: The error that stays even if you have a perfect model. It is 
 
 ## (c)
 
-# TODO
-
-Squared bias:
+Squared bias: The error that comes with trying to estimate the function.
 
 Variance: Increasing because a model that is very flexible follows the data very closely. This means that if you add new data the line would have to change its entire shape to accommodate them. 
 
-Expected test MSE: 
+Expected test MSE: This is how well the model performs on the test data. This MSE is much more important than the training MSE. 
 
 Training MSE: This is decreasing because as the flexibility increases it is able to get closer to more of the datapoints and accommodate for the exact shape of the data.
 
@@ -105,44 +105,97 @@ Irreducible error: This is a flat line. Since it's the variance of the random no
 
 ## (d)
 
-# TODO
-
-```{r}
-
-n <- 100
-
-x = seq(0, 10, length.out = n)
-error = rnorm(n,0,1)
-
-y1 <- x + error
-
-m1 <- lm(y1 ~ x)
-
-beta_0 <- 1
-beta_1 <- 2
-beta_2 <- 3
-beta_3 <- 4
-
-y2 <- beta_0 + beta_1 * x + beta_2 * x^2 + beta_3 * x^3 + error
-
-m2 <- lm(y2 ~ poly(x, 3))
-
-summary(m1)
-summary(m2)
-
-```
+I would expect the cubic model to have a lower training MSE because it can adapt to the specific training data better since it is more flexible.
 
 ## (e)
 
+I would expect the linear model to have a lower test MSE because the true relationship is linear. The cubic model will overfit the noise in the training data leading to a higher test MSE.
+
 # Problem 3
+
+```{r}
+
+set.seed(1)
+
+
+library(ISLR2)
+library(caret)
+library(ggplot2)
+#install.packages('caret')
+
+k = 5 # Number of folds
+
+max_degree <- 9
+errors <- numeric(max_degree)
+
+# Create folds
+flds <- createFolds(Boston$medv, k, list = TRUE)
+flds[[1]]
+
+for (d in 1:max_degree) {
+  
+  folds <- numeric(k)
+                   
+  for(i in 1:k){
+    # Get test indices for this fold
+    test_index = flds[[i]]
+    test = Boston[test_index, ]
+    train = Boston[-test_index, ]
+    
+    m <- lm(medv ~ poly(lstat, d), data = train)
+    
+    predict <- predict(m, newdata = test)
+    
+    folds[i] = mean((test$medv - predict)^2)
+    
+  }
+  
+  errors[d] = mean(folds)
+}
+
+cv_results <- data.frame(Degree = 1:max_degree, CV_Error = errors)
+print(cv_results)
+
+ggplot(cv_results, aes(x = Degree, y = CV_Error)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "darkred", size = 2) +
+  scale_x_continuous(breaks = 1:9) +
+  labs(title = "5-Fold CV Error vs. Polynomial Degree",
+       x = "Polynomial Degree",
+       y = "Mean Squared Error (CV)") +
+  theme_minimal()
+  
+  
+
+```
+
+Based on the data, the model with degree of 5 has the lowest MSE. For that reason, when building the model I would select degree 5.
 
 # Problem 4
 
 ## (a)
+
+The createFolds method shuffles the data and splits into k equal sized groups (or folds).
+
+Then, we iterate through a loop k times doing the following:
+
+- Select one fold to be the test/validation set.
+
+- Use the remaining k-1 folds combined as the training set.
+
+- Fit the model on the training set and evaluate its performance on the test fold.
+
+Once every fold has been the test set exactly once, calculate the average of the k resulting test errors. This average is your final CV estimate of the model's performance.
+
 ## (b)
 
 ### (i)
+
+k-fold validation is much more consistent compared to a basic validation set approach. instead of only training on ~50% of the data, the k fold approach trains on $(k-1)/k$%
+  
 ### (ii)
+
+
 
 ## (c)
 

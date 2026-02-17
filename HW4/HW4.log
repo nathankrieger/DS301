@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.11)  16 FEB 2026 18:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  17 FEB 2026 15:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -486,43 +486,53 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <7> on input line 120.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 120.
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 163.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 167.
 (/home/nathan-krieger/.TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 164.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 168.
 [1
 
 {/home/nathan-krieger/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}]
-<HW4_files/figure-latex/unnamed-chunk-1-1.pdf, id=27, 436.63126pt x 285.065pt>
+<HW4_files/figure-latex/unnamed-chunk-1-1.pdf, id=25, 436.63126pt x 285.065pt>
 File: HW4_files/figure-latex/unnamed-chunk-1-1.pdf Graphic file (type pdf)
 <use HW4_files/figure-latex/unnamed-chunk-1-1.pdf>
-Package pdftex.def Info: HW4_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 189.
+Package pdftex.def Info: HW4_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 193.
 (pdftex.def)             Requested size: 436.63019pt x 285.0643pt.
 [2 <./HW4_files/figure-latex/unnamed-chunk-1-1.pdf>]
-LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 276.
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 267.
 (/home/nathan-krieger/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [3{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}] [4] [5] [6] [7] (./HW4.aux)
+) [3{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
+<HW4_files/figure-latex/unnamed-chunk-2-1.pdf, id=51, 459.7175pt x 315.1775pt>
+File: HW4_files/figure-latex/unnamed-chunk-2-1.pdf Graphic file (type pdf)
+<use HW4_files/figure-latex/unnamed-chunk-2-1.pdf>
+Package pdftex.def Info: HW4_files/figure-latex/unnamed-chunk-2-1.pdf  used on input line 351.
+(pdftex.def)             Requested size: 459.71637pt x 315.17673pt.
+[4]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 367.
+(/home/nathan-krieger/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
+File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+) [5{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc} <./HW4_files/figure-latex/unnamed-chunk-2-1.pdf>] [6] [7] [8] (./HW4.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 14040 strings out of 469471
- 219641 string characters out of 5467771
- 676839 words of memory out of 5000000
- 42378 multiletter control sequences out of 15000+600000
- 678357 words of font info for 122 fonts, out of 8000000 for 9000
+ 14090 strings out of 469471
+ 221106 string characters out of 5467771
+ 675783 words of memory out of 5000000
+ 42417 multiletter control sequences out of 15000+600000
+ 679242 words of font info for 127 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 83i,6n,93p,1000b,701s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on HW4.pdf (7 pages, 243990 bytes).
+ 83i,6n,93p,1000b,674s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
+Output written on HW4.pdf (8 pages, 260354 bytes).
 PDF statistics:
- 235 PDF objects out of 1000 (max. 8388607)
- 199 compressed objects within 2 object streams
- 37 named destinations out of 1000 (max. 500000)
- 26862 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 249 PDF objects out of 1000 (max. 8388607)
+ 204 compressed objects within 3 object streams
+ 36 named destinations out of 1000 (max. 500000)
+ 28899 words of extra memory for PDF output out of 29859 (max. 10000000)
 
