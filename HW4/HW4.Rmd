@@ -45,7 +45,7 @@ From the slides: "The expected test MSE is never smaller than the irreducible er
 
 ## (f)
 
-True. We could fit a model to be exactly the same (overfitting) which can effectively cover all points exactly, making the training MSE = 0 which is less than the irreducible error. 
+True. We could fit a model to be exactly the same (over fitting) which can effectively cover all points exactly, making the training MSE = 0 which is less than the irreducible error. It's important to note that while the training MSE is 0, the actual irreducable error has not changed, its just hidden by over fitting.
 
 # Problem 2
 
@@ -92,11 +92,11 @@ Irreducible Error: The error that stays even if you have a perfect model. It is 
 
 ## (c)
 
-Squared bias: The error that comes with trying to estimate the function.
+Squared bias: The error that comes with trying to estimate the function. As flexibity of a model increases the bias decreases.
 
 Variance: Increasing because a model that is very flexible follows the data very closely. This means that if you add new data the line would have to change its entire shape to accommodate them. 
 
-Expected test MSE: This is how well the model performs on the test data. This MSE is much more important than the training MSE. 
+Expected test MSE: This is how well the model performs on the test data. This MSE is much more important than the training MSE. The error decreases as the flexibility increases until it hits a point where it begins to over fit, after that happens the error increasing again.
 
 Training MSE: This is decreasing because as the flexibility increases it is able to get closer to more of the datapoints and accommodate for the exact shape of the data.
 
@@ -191,11 +191,20 @@ Once every fold has been the test set exactly once, calculate the average of the
 
 ### (i)
 
-k-fold validation is much more consistent compared to a basic validation set approach. instead of only training on ~50% of the data, the k fold approach trains on $(k-1)/k$%
-  
+k-fold validation is much more consistent compared to a basic validation set approach. k-fold CV is more stable because every observation is eventually used for both training and testing.
+
+Also, in the basic approach, a large part of the data is never used to train the model. k-fold CV ensures that k-1/k of the data is used for training in each iteration, which typically leads to a more accurate and less biased estimate of the test error.
+
+The disadvantage of k-fold CV compared to validation set is that it is more computationally expensive because the model is fitted k times.
+
 ### (ii)
 
+k-fold CV is a computationally cheaper version of LOOCV. LOOCV is a k-fold CV with k = n. 
 
+k-fold CV also has a lower variance in the error estimate compared to LOOCV because of the bias variance trade off. Since LOOCV training sets are nearly the same besides 1 entry, there is a higher variance when compared to k-folds with a reasonable k (say 5-20).
+
+
+To go with this, a disadvantage of the k-folds approach compared to the LOOCV approach is that it has a higher bias. LOOCV uses all but 1 entries of the data for training so it is less bias because of the bias variance trade off. k-folds uses slightly less data causing it to be slightly more bias. 
 
 ## (c)
 
@@ -324,7 +333,7 @@ M2 (degree 2) had the smallest LOOCV error. This is what I expected because $f(X
 
 ## (g)
 
-LOOCV trains the model on n - 1 observations so it gives a better, more accurate estimate of the test error when comparing it to a standard test, training set approach.
+LOOCV trains the model on n - 1 observations so it gives a better, more accurate estimate of the test error when comparing it to a standard test, training set approach. Each training set is nearly full sized.
 
 ## (h)
 
@@ -332,5 +341,4 @@ As k increases, the bias decreases. This is because the training data gets large
 
 ## (i)
 
-# TODO
-As k increases, the variance increases. This is because as k increases, the size of the testing data decreases which increases variance. 
+As k increases, the variance increases. This is because as k increases, the size of the testing data decreases which increases variance. When the test fold size decreases, every prediction has a bigger effect on the estimate which increases variance. Averaging highly correlated values results in higher variance. 
