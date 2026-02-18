@@ -165,8 +165,6 @@ ggplot(cv_results, aes(x = Degree, y = CV_Error)) +
        y = "Mean Squared Error (CV)") +
   theme_minimal()
   
-  
-
 ```
 
 Based on the data, the model with degree of 5 has the lowest MSE. For that reason, when building the model I would select degree 5.

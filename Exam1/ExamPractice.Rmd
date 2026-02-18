@@ -1,0 +1,150 @@
+---
+title: "ExamPractice"
+author: "Nathan Krieger"
+date: "2026-02-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Problem 1
+
+```{r}
+
+set.seed(123)
+
+n <- 500
+
+X1 <- seq(0, 5, length.out = n)
+
+beta_0 <- 1
+beta_1 <- 1
+beta_2 <- 2
+beta_3 <- 3
+
+error = rnorm(n,0,1)
+
+y <- beta_0 + beta_1 * X1 + beta_2 * X1^2 + beta_3 * X1^3 + error
+
+df <- data.frame(y, X1)
+
+```
+
+
+# Problem 2
+
+## (a)
+``` {r}
+
+
+
+max_degree <- 5
+errors <- numeric(max_degree)
+
+for (d in 1:max_degree) {
+  
+  abc <- numeric(n)
+                   
+  for(i in 1:n){
+    test = df[i, ]
+    train = df[-i, ]
+    
+    m <- lm(y ~ poly(X1, d), data = train)
+    
+    predict <- predict(m, newdata = test)
+    
+    abc[i] = mean((test$y - predict)^2)
+    
+  }
+  
+  errors[d] = mean(abc)
+}
+
+cv_results <- data.frame(Degree = 1:max_degree, CV_Error = errors)
+print(cv_results)
+
+ggplot(cv_results, aes(x = Degree, y = CV_Error)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "darkred", size = 2) +
+  scale_x_continuous(breaks = 1:9) +
+  labs(title = "LOOCV Error vs. Polynomial Degree",
+       x = "Polynomial Degree",
+       y = "Mean Squared Error (CV)") +
+  theme_minimal()
+  
+
+
+```
+
+  Degree     CV_Error
+1      1 2177.9593624
+2      2   52.8534003
+3      3    0.9573797
+4      4    0.9579840
+5      5    0.9611512
+
+## (b)
+
+Degree 3 performs the best.
+
+## (c)
+
+Because it has the lowest error compared to the other degrees tested.
+
+
+## (d)
+
+``` {r}
+
+k = 10 # Number of folds
+
+max_degree <- 5
+errors <- numeric(max_degree)
+
+# Create folds
+flds <- createFolds(df$y, k, list = TRUE)
+flds[[1]]
+
+for (d in 1:max_degree) {
+  
+  folds <- numeric(k)
+                   
+  for(i in 1:k){
+    # Get test indices for this fold
+    test_index = flds[[i]]
+    test = df[test_index, ]
+    train = df[-test_index, ]
+    
+    m <- lm(y ~ poly(X1, d), data = train)
+    
+    predict <- predict(m, newdata = test)
+    
+    folds[i] = mean((test$y - predict)^2)
+    
+  }
+  
+  errors[d] = mean(folds)
+}
+
+cv_results <- data.frame(Degree = 1:max_degree, CV_Error = errors)
+print(cv_results)
+
+ggplot(cv_results, aes(x = Degree, y = CV_Error)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "darkred", size = 2) +
+  scale_x_continuous(breaks = 1:9) +
+  labs(title = "5-Fold CV Error vs. Polynomial Degree",
+       x = "Polynomial Degree",
+       y = "Mean Squared Error (CV)") +
+  theme_minimal()
+  
+  
+
+```
+
+The model with degree 4 has the lowest test MSE.
+
+
