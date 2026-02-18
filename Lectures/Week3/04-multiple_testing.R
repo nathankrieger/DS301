@@ -1,3 +1,5 @@
+# multiple predictors
+
 #### Code is from In-class activity 3#######
 
 # Run the simulation with alpha value: 0.01 and 0.05 

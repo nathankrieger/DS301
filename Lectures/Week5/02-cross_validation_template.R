@@ -1,3 +1,6 @@
+
+# LOOCV, PRESS, k-fold - comparing linear and quadratic for each
+
 library(ISLR2)
 # response: mpg
 # predictor: horsepower
@@ -91,9 +94,12 @@ press_residuals_M1 = M1$residuals / (1 - leverage_M1)
 press_MSE_M1 = mean(press_residuals_M1^2)
 
 # Prediction Sum of Squares (PRESS) for quadratic models
+M2 <- lm(mpg ~ poly(horsepower, 2), data = train)
 
-
-
+# leverage
+leverage_M2 = hatvalues(M2)
+press_residuals_M2 = M2$residuals / (1 - leverage_M2)
+press_MSE_M2 = mean(press_residuals_M2^2)
 
 #################
 ### K-fold CV ###

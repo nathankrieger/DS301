@@ -1,3 +1,6 @@
+
+# polynomial models, seeing what degree is best (basic)
+
 library(MASS)
 
 
@@ -117,12 +120,9 @@ for (i in 1:9) {
 }
 
 # Step 3: Plot Training MSE vs. Model Complexity (Polynomial Degree)
-for (i in 1:9) {
-  
-  train_MSE(MSE[i])
-}
 
+plot(train_MSE)
 
 # Step 4: Plot Test MSE vs. Model Complexity (Polynomial Degree)
 
-
+plot(test_MSE)

@@ -1,3 +1,6 @@
+
+# mock data (x, y) with MULTIPLE x, confidence intervals
+
 ############################################
 ## Setup
 ############################################
@@ -14,17 +17,27 @@ m1 = lm(medv ~ crim + lstat, data = Boston)
 # Goal: extract t-values and p-values for all coefficients
 
 # 1) Look at the full summary output
-# summary(m1)
+
+summary(m1)
 
 
 # 2) Extract all t-values
 
+summary(m1)$coefficients[ , 3] # for all rows, get column 3
+
 # 3) Extract all p-values
+
+summary(m1)$coefficients[ , 4]
 
 # 4) Count how many coefficients are significant at alpha = 0.05
 
+p_values <- summary(m1)$coefficients[ , 4] 
+sum(p_values < 0.05)
+
 # 5) Write a conclusion in words (alpha = 0.05)
 
+# The intercept and lstat columns are significant.
+# The null hypothesis for beta 1 does not get rejected
 
 ############################################
 ## Confidence intervals
@@ -32,6 +45,8 @@ m1 = lm(medv ~ crim + lstat, data = Boston)
 
 # 99% confidence intervals for beta0, beta1, beta2
 
+confint(m1, "crim", level = 0.99)
+confint(m1, level = 0.99)
 
 ############################################
 ## Confidence / prediction intervals
@@ -42,7 +57,12 @@ new_point = data.frame(lstat = 5, crim = 0.5)
 
 # 95% confidence interval for mean response E(Y | X)
 
+predict(m1, new_point, interval = 'confidence', level = 0.95)
+
 # 95% prediction interval for a new Y
+
+predict(m1, new_point, interval = 'prediction', level = 0.95)
+
 
 ########################
 ## In-class Activity  ##

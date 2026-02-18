@@ -1,3 +1,7 @@
+
+# load data, explore data, setup linear regression model with a dataframe, predict new entry
+
+
 ############################################################
 # Multiple Linear Regression (MLR): Patient Satisfaction
 ############################################################
