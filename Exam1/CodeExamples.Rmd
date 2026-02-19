@@ -2,14 +2,16 @@
 title: "Untitled"
 author: "Nathan Krieger"
 date: "2026-02-18"
-output: html_document
+output: pdf_document
 ---
 
-# K folds with varying degrees 
+# K folds with varying degrees - REAL DATA 
 
 ```{r}
 
-set.seed(1)
+# Predicting medv based on lstat
+
+set.seed(123)
 
 
 library(ISLR2)
@@ -63,11 +65,101 @@ ggplot(cv_results, aes(x = Degree, y = CV_Error)) +
 ```
 
 
-# LOOCV with varying degrees
+# K folds with varying degrees - FAKE DATA 
+
+```{r}
+
+set.seed(123)
+
+n <- 500
+
+X1 <- seq(0, 5, length.out = n)
+
+beta_0 <- 1
+beta_1 <- 1
+beta_2 <- 2
+beta_3 <- 3
+
+error = rnorm(n,0,1)
+
+y <- beta_0 + beta_1 * X1 + beta_2 * X1^2 + beta_3 * X1^3 + error
+
+df <- data.frame(X1, y)
+
+?data.frame
+
+library(ISLR2)
+library(caret)
+library(ggplot2)
+#install.packages('caret')
+
+k = 5 # Number of folds
+
+max_degree <- 9
+errors <- numeric(max_degree)
+
+# Create folds
+flds <- createFolds(df$y, k, list = TRUE)
+#flds[[1]]
+
+for (d in 1:max_degree) {
+  
+  folds <- numeric(k)
+                   
+  for(i in 1:k){
+    # Get test indices for this fold
+    test_index = flds[[i]]
+    test = df[test_index, ]
+    train = df[-test_index, ]
+    
+    m <- lm(y ~ poly(X1, d), data = train)
+    
+    predict <- predict(m, newdata = test)
+    
+    folds[i] = mean((test$y - predict)^2)
+    
+  }
+  
+  errors[d] = mean(folds)
+}
+
+cv_results <- data.frame(Degree = 1:max_degree, CV_Error = errors)
+print(cv_results)
+
+ggplot(cv_results, aes(x = Degree, y = CV_Error)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "darkred", size = 2) +
+  scale_x_continuous(breaks = 1:9) +
+  labs(title = "5-Fold CV Error vs. Polynomial Degree",
+       x = "Polynomial Degree",
+       y = "Mean Squared Error (CV)") +
+  theme_minimal()
+
+
+```
+
+
+# LOOCV with varying degrees - FAKE DATA
 
 ```{r}
 
 
+set.seed(123)
+
+n <- 500
+
+X1 <- seq(0, 5, length.out = n)
+
+beta_0 <- 1
+beta_1 <- 1
+beta_2 <- 2
+beta_3 <- 3
+
+error = rnorm(n,0,1)
+
+y <- beta_0 + beta_1 * X1 + beta_2 * X1^2 + beta_3 * X1^3 + error
+
+df <- data.frame(X1, y)
 
 max_degree <- 5
 errors <- numeric(max_degree)
