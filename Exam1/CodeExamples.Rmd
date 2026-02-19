@@ -38,7 +38,7 @@ for (d in 1:max_degree) {
     test = Boston[test_index, ]
     train = Boston[-test_index, ]
     
-    m <- lm(medv ~ poly(lstat, d), data = train)
+    m <- lm(medv ~ poly(lstat, d, raw = TRUE), data = train)
     
     predict <- predict(m, newdata = test)
     
@@ -86,8 +86,6 @@ y <- beta_0 + beta_1 * X1 + beta_2 * X1^2 + beta_3 * X1^3 + error
 
 df <- data.frame(X1, y)
 
-?data.frame
-
 library(ISLR2)
 library(caret)
 library(ggplot2)
@@ -112,7 +110,7 @@ for (d in 1:max_degree) {
     test = df[test_index, ]
     train = df[-test_index, ]
     
-    m <- lm(y ~ poly(X1, d), data = train)
+    m <- lm(y ~ poly(X1, d, raw = TRUE), data = train)
     
     predict <- predict(m, newdata = test)
     
@@ -172,7 +170,7 @@ for (d in 1:max_degree) {
     test = df[i, ]
     train = df[-i, ]
     
-    m <- lm(y ~ poly(X1, d), data = train)
+    m <- lm(y ~ poly(X1, d, raw = TRUE), data = train)
     
     predict <- predict(m, newdata = test)
     
@@ -198,3 +196,49 @@ ggplot(cv_results, aes(x = Degree, y = CV_Error)) +
 
 ```
   
+  
+# LOOCV with varying degrees - REAL DATA
+
+```{r}
+
+library(ISLR2)
+library(ggplot2)
+
+max_degree <- 5
+errors <- numeric(max_degree)
+
+n <- nrow(Boston)
+
+for (d in 1:max_degree) {
+  
+  abc <- numeric(n)
+                   
+  for(i in 1:n){
+    test = Boston[i, ]
+    train = Boston[-i, ]
+    
+    m <- lm(medv ~ poly(lstat, d, raw = TRUE), data = train)
+    
+    predict <- predict(m, newdata = test)
+    
+    abc[i] = mean((test$medv - predict)^2)
+    
+  }
+  
+  errors[d] = mean(abc)
+}
+
+cv_results <- data.frame(Degree = 1:max_degree, CV_Error = errors)
+print(cv_results)
+
+ggplot(cv_results, aes(x = Degree, y = CV_Error)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "darkred", size = 2) +
+  scale_x_continuous(breaks = 1:9) +
+  labs(title = "LOOCV Error vs. Polynomial Degree",
+       x = "Polynomial Degree",
+       y = "Mean Squared Error (CV)") +
+  theme_minimal()
+
+
+```
