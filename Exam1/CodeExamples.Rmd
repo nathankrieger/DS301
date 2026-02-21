@@ -242,3 +242,38 @@ ggplot(cv_results, aes(x = Degree, y = CV_Error)) +
 
 
 ```
+
+
+
+# TESTING if sigma hat squared is an unbiased estimator
+
+
+```{r}
+
+set.seed(123)
+
+X1 = seq(0,10,length.out =100) #generates 100 equally spaced values from 0 to 10.
+X2 = runif(100) #generates 100 uniform values.
+
+epsilon = rnorm(100, mean = 0, sd = 2)
+
+Y = 2 + 3*X1 + 5*X2 + epsilon
+
+set.seed(123)
+
+B <- 100
+sigma2_hat <- numeric(B)
+
+for (b in 1:B) {
+  epsilon <- rnorm(100, 0, 2)
+  Y <- 2 + 3*X1 + 5*X2 + epsilon
+  
+  model <- lm(Y ~ X1 + X2)
+  sigma2_hat[b] <- summary(model)$sigma^2
+}
+
+knitr::kable(mean(sigma2_hat))
+
+```
+
+
