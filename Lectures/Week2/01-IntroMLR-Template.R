@@ -81,7 +81,7 @@ new_patient <- data.frame(age, severe, anxiety)
 
 new_patient
 
-predict(m1, newdata = new_patient)
+abc <- predict(m1, newdata = new_patient)
 
 ############################################################
 # In-class Activity
