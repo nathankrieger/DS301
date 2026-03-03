@@ -11,47 +11,160 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Problem 1: Best subset selection
 
-  The data for this problem comes from a study by Stamey et al. (1989). They examined the
-  relationship between the level of prostate-specific antigen and a number of clinical measures in men
-  who were about to receive a radical prostatectomy. The variables are log cancer volume (lcavol),
-  log prostate weight (lweight), age, log of the amount of benign prostatic hyperplasia (lbph),
-  seminal vesicle invasion (svi), log of capsular penetration (lcp), Gleason score (gleason), and
-  percent of Gleason scores 4 or 5 (ppp45). The last column corresponds to which observations were
-  used in the training set and which were used in the test set (train).
-  
-  Read in the prostate data set using the following code:
-  
-  prostate = read.table(‘...Your file pathway..../prostate.data’,header=TRUE)
-  
-  Our response of interest here is the log prostate-specific antigen (lpsa). We will use this data set
-  to practice 3 common subset selection approaches.
+The data for this problem comes from a study by Stamey et al. (1989). They examined the
+relationship between the level of prostate-specific antigen and a number of clinical measures in men
+who were about to receive a radical prostatectomy. The variables are log cancer volume (lcavol),
+log prostate weight (lweight), age, log of the amount of benign prostatic hyperplasia (lbph),
+seminal vesicle invasion (svi), log of capsular penetration (lcp), Gleason score (gleason), and
+percent of Gleason scores 4 or 5 (ppp45). The last column corresponds to which observations were
+used in the training set and which were used in the test set (train).
+
+Read in the prostate data set using the following code:
+
+``` {r}
+
+prostate = read.table('~/git/DS301/HW5/prostate.data',header=TRUE)
+
+```
+
+Our response of interest here is the log prostate-specific antigen (lpsa). We will use this data set
+to practice 3 common subset selection approaches.
   
 ## (a)
   
-  Approach 1: Perform best subset selection on the entire data set with lpsa as the response.
-  For each model size, you will obtain a ’best’ model (size here is just the number of predictors
-  in the model): M1 is the best model with 1 predictor (size 1), M2 is the best model with 2
-  predictors (size 2), and so on.
-  
-  Create a table of the AIC, BIC, adjusted R2 and Mallow’s Cp for each model size. Report
-  the model with the smallest AIC, smallest BIC, largest adjusted R2 and smallest Mallow’s
-  Cp. Do they lead to different results? Using your own judgement, choose a final model.
-  
-  
+Approach 1: Perform best subset selection on the entire data set with lpsa as the response.
+For each model size, you will obtain a ’best’ model (size here is just the number of predictors
+in the model): M1 is the best model with 1 predictor (size 1), M2 is the best model with 2
+predictors (size 2), and so on.
+
+Create a table of the AIC, BIC, adjusted R2 and Mallow’s Cp for each model size. Report
+the model with the smallest AIC, smallest BIC, largest adjusted R2 and smallest Mallow’s
+Cp. Do they lead to different results? Using your own judgement, choose a final model.
+
+
+```{r}
+
+set.seed(123)
+
+library(leaps)
+regfit <- regsubsets(lpsa ~ ., data = prostate, nbest = 1, nvmax = 8)
+
+n = dim(prostate)[1]
+
+regfit
+
+regfit_summary <- summary(regfit)
+
+adjr2 <- regfit_summary$adjr2
+
+rss <- regfit_summary$rss
+
+p <- rowSums(regfit_summary$which)
+
+aic <- n*log(rss / n) + 2*p
+
+bic <- n*log(rss / n) + p*log(n)
+
+cp <- regfit_summary$cp
+
+
+best_adjr2 <- which.max(adjr2)
+best_cp <- which.min(cp)
+best_aic <- which.min(aic)
+best_bic <- which.min(bic)
+
+best_aic
+best_bic
+best_adjr2
+best_cp
+
+plot(p - 1, bic)
+
+plot(p - 1, aic)
+
+plot(p - 1, adjr2)
+
+plot(p - 1, cp)
+
+cbind(p, rss, adjr2, cp, aic, bic)
+
+cbind(p, rss, adjr2, cp, aic, bic)[5, ]
+
+
+```
+Best AIC is 5
+
+Best BIC is 3
+
+Best adr2 is 7
+
+Best CP is 5
+
+Using my best judgement, I believe model size 5 is the best. This is because it has the ideal AIC and CP and the adjr2 and BIC are not far from the best.
+
+
 ## (b)
   
-  Approach 2: The dataset has already been split into a training and test set. Construct your
-  training and test set based on this split. You may use the following code for convenience:
+Approach 2: The dataset has already been split into a training and test set. Construct your
+training and test set based on this split. You may use the following code for convenience:
+
+``` {r}
+
+train = subset(prostate,train==TRUE)[,1:9]
+
+test = subset(prostate,train==FALSE)[,1:9]
+
+```
+
+For each model size, you will obtain a ‘best’ model. Fit each of those models on the training
+set. Then evaluate the model performance on the test set by computing their test MSE.
+
+Choose a final model based on prediction accuracy. Fit that model to the full dataset and
+report your final model here.
+
+``` {r}
+
+best_train <- regsubsets(lpsa ~ ., data = train, nbest = 1, nvmax = 8)
   
-  train = subset(prostate,train==TRUE)[,1:9]
+## the predict() function does not work on regsubsets objects, 
+# so we need to write our own code to obtain our predicted values:
+
+# Convert the test dataset into a model matrix (needed for matrix multiplication)
+# This creates a numeric matrix with an intercept column and all predictor variables
   
-  test = subset(prostate,train==FALSE)[,1:9]
+test_mse <- rep(NA, 8)
+test_mat <- model.matrix(lpsa ~ ., data = test)
+# Loop through all 19 possible model sizes 
+for (i in 1:8) {
+
+  # Extract the coefficients for the model with 'i' predictors from the best subset selection
+  coef_m <- coef(best_train, id = i)
+  # Compute the predicted values for the test set using matrix multiplication
+  # Multiply the selected predictors' values in 'test.mat' by their corresponding coefficients
   
-  For each model size, you will obtain a ‘best’ model. Fit each of those models on the training
-  set. Then evaluate the model performance on the test set by computing their test MSE.
+  pred <- test_mat[ , names(coef_m)]%*%coef_m
+
+  # Calculate MSE
+  test_mse[i] <- mean((pred - test$lpsa)^2)
+}
+
+test_mse
+
+# Identify the best model size based on the minimum testing error  
+optimal_size <- which.min(test_mse)
+optimal_size
+
+# Train the final model using the optimal number of predictors
+final_model <- regsubsets(lpsa ~ ., data = prostate, nvmax = optimal_size)
+
+# Get the selected predictors for the final model
+final_coeffs <- coef(final_model, id = optimal_size)
+knitr::kable(final_coeffs)
+
+```
   
-  Choose a final model based on prediction accuracy. Fit that model to the full dataset and
-  report your final model here.
+Final model has 3 predictors: lcavol, lweight, svi
+
   
 ## (c)
 
@@ -75,6 +188,52 @@ each model size. In other words, for all k models of size 1, you will compute th
 fold cross-validated error. For all the k models of size 2, you will compute their k-fold
 cross-validated errors, and so on. Report your 8 CV errors here.
 
+
+```{r}
+
+library(caret)
+
+set.seed(10)
+
+# Number of folds for cross-validation
+k = 10
+flds = createFolds(prostate$lpsa, k = k, list = TRUE)  # Create folds
+
+# Number of predictors
+max_models = 8
+
+# Matrix to store cross-validation errors for each model size across all folds
+cv_errors = matrix(NA, nrow = k, ncol = max_models)
+
+# Outer loop: Iterate through each fold  
+for (i in 1:k) {  
+  # Get test indices for this fold
+  test_index = flds[[i]]  
+  # Split the dataset into training and validation sets for the current fold:
+  test_data = prostate[test_index, ]  # Validation set
+  train_data = prostate[-test_index, ]  # Training set
+  
+  # Perform Best Subset Selection on the training set
+  regfit = regsubsets(lpsa ~ ., data = train_data, nbest = 1, nvmax = max_models)
+  
+  # Inner loop: Iterate through each model size (1 to max_models)
+  # Calculate cv error (test MSE) 
+  for (j in 1:max_models) {  
+    test.mat = model.matrix(lpsa ~ ., data = test_data)
+    coef.m = coef(regfit, id = j)    
+    pred = test.mat[, names(coef.m)] %*% coef.m 
+    cv_errors[i, j] = mean((test_data$lpsa - pred)^2) 
+  }
+  
+}
+
+# Compute the average cross-validation error for each model size  
+mean_cv_errors = colMeans(cv_errors)
+knitr::kable(mean_cv_errors)
+
+
+```
+
 ### ii. (practice)
 Choose the model size that gives you the smallest CV error. Now perform
 best subset selection on the full data set again in order to obtain this final model. Report
@@ -82,6 +241,25 @@ that model here. (For example, suppose cross-validation selected a 5-predictor m
 I would perform best subset selection on the full data set again in order to obtain the
 5-predictor model.)
 
+```{r}
+
+# Identify the best model size based on the minimum cross-validation error  
+optimal_size = which.min(mean_cv_errors)
+print(paste("Optimal model size:", optimal_size))
+
+# Plot cross-validation errors to visualize model performance  
+plot(mean_cv_errors, type = "b")
+abline(v = optimal_size, col = "red")
+
+# Train the final model using the optimal number of predictors
+final_model <- regsubsets(lpsa ~ ., data = prostate, nvmax = optimal_size)
+
+# Get the selected predictors for the final model
+final_coeffs <- coef(final_model, id = optimal_size)
+print("Final Model Coefficients:")
+knitr::kable(final_coeffs)
+
+```
 
 # Problem 2: Concept Review
   
@@ -101,6 +279,12 @@ MC :Y ~ X1 + X2 + X7 + X9 + X10
 
 Using AIC, BIC, Mallow’s Cp, adjusted R2 could lead us to pick different final models.
 
+False.
+
+Because p and n are completely identical across MA, MB, and MC, the penalty term for each metric becomes a fixed constant for all three models.
+
+Whichever model fits the data the best will simultaneously minimize AIC, minimize BIC, minimize Mallow's Cp, and maximize Adjusted R2. They cannot disagree when comparing models of the exact same size.
+
 
 ## (b)
 
@@ -115,6 +299,9 @@ M4 :Y ~ X4 + X5 + X6 + X7
 
 It must be that RSS3 >= RSS4.
 
+
+False. These models are not nested. The only thing they have in common is X4. RSS behavior is not guaranteed since one model is not a subset of the other.
+
 ## (c)
 
 For the following statement, state whether or not it is True or False. Briefly justify your
@@ -128,25 +315,46 @@ M4 :Y ~ X4 + X5 + X6 + X7
 
 It must be that RSS2 >= RSS4.
 
+True. These are nested models. M2 is a subset of M4. When more predictors are added the RSS will either stay the same or decrease. 
+
 ## (d)
 (practice) What advantages are there to using AIC/BIC instead of using the test MSE as
+
+We don't need to split the dataset. It uses the whole thing.
+
+More stable
+
+Computational cheaper than CV
 
 
 # Problem 3: Diagnostics for MLR (practice)
 
 (a) List the four assumptions we make when fitting a multiple linear regression model.
 
+
+1. Relationship between Y and X = (X1, X2, . . . , Xp ) is approximately linear.
+2. $E(\epsilon) = 0$.
+3. $Var(\epsilon) = \sigma^2$.
+4. $\epsilon$'s are uncorrelated.
+
+
 (b) True or False? In order to fit a multiple linear regression model (i.e. obtain least square
 estimates), we must have distributional assumptions on the random error term epsilon i. Briefly
 justify your answer.
+
+False. You do not need any distributional assumptions on the random error term. There is no need for distributional assumptions when getting lease squares estimates. Distributional assumptions are only required later if you want to perform statistical inference, such as hypothesis testing or creating confidence intervals.
 
 (c) True or False? The summary(lm()) output automatically gives you p-value for individual
 hypothesis tests: H0 : beta_j = 0 versus H1 : beta_j = 0, j = 1, . . . , p. These hypothesis tests assume
 that the random error term are normally distributed. Briefly justify your answer.
 
+True. The summary provides the hypothesis tests in the Pr(t) column. The test statistic assumes that the error term is normally distributed.
+
 (d) Suppose we want to run some visual diagnostics to check whether or not the linearity as-
 sumption holds. Besides the fact that it is is time consuming, explain why it is not sufficient
 to check every pairwise scatterplot between Y and Xj , j = 1, . . . , p.
+
+Checking the marginal scatterplot between Y and a single predictor Xj only shows you the marginal (unadjusted) relationship between those two variables, completely ignoring the other predictors in your model.
 
 (e) To check whether or not the linearity assumption holds, we can run some diagnostics. Let’s
 use the Auto dataset as an example from library(ISLR2). Run the following code:
@@ -174,6 +382,16 @@ corresponding residual plot here. Is it an improvement over m1?
 We’ll discuss the remaining plots from plot(m1) and their utility in an upcoming lecture.
 
 
+```{r}
+
+m2 = lm(mpg~poly(horsepower, degree = 10, raw = TRUE), data=Auto)
+summary(m2)
+par(mfrow=c(2,2))
+plot(m2)
+
+```
+
+Degree 10 shows an improvement over m1 because the plot shows a much straighter, flat red line. a degree of 2 might be a good choice due to the original parabolic shape, but the line remains curved with degree 2.
 
 
 
