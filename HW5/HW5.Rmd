@@ -1,0 +1,179 @@
+---
+title: "HW5"
+author: "Nathan Krieger"
+date: "2026-03-03"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 1: Best subset selection
+
+  The data for this problem comes from a study by Stamey et al. (1989). They examined the
+  relationship between the level of prostate-specific antigen and a number of clinical measures in men
+  who were about to receive a radical prostatectomy. The variables are log cancer volume (lcavol),
+  log prostate weight (lweight), age, log of the amount of benign prostatic hyperplasia (lbph),
+  seminal vesicle invasion (svi), log of capsular penetration (lcp), Gleason score (gleason), and
+  percent of Gleason scores 4 or 5 (ppp45). The last column corresponds to which observations were
+  used in the training set and which were used in the test set (train).
+  
+  Read in the prostate data set using the following code:
+  
+  prostate = read.table(‘...Your file pathway..../prostate.data’,header=TRUE)
+  
+  Our response of interest here is the log prostate-specific antigen (lpsa). We will use this data set
+  to practice 3 common subset selection approaches.
+  
+## (a)
+  
+  Approach 1: Perform best subset selection on the entire data set with lpsa as the response.
+  For each model size, you will obtain a ’best’ model (size here is just the number of predictors
+  in the model): M1 is the best model with 1 predictor (size 1), M2 is the best model with 2
+  predictors (size 2), and so on.
+  
+  Create a table of the AIC, BIC, adjusted R2 and Mallow’s Cp for each model size. Report
+  the model with the smallest AIC, smallest BIC, largest adjusted R2 and smallest Mallow’s
+  Cp. Do they lead to different results? Using your own judgement, choose a final model.
+  
+  
+## (b)
+  
+  Approach 2: The dataset has already been split into a training and test set. Construct your
+  training and test set based on this split. You may use the following code for convenience:
+  
+  train = subset(prostate,train==TRUE)[,1:9]
+  
+  test = subset(prostate,train==FALSE)[,1:9]
+  
+  For each model size, you will obtain a ‘best’ model. Fit each of those models on the training
+  set. Then evaluate the model performance on the test set by computing their test MSE.
+  
+  Choose a final model based on prediction accuracy. Fit that model to the full dataset and
+  report your final model here.
+  
+## (c)
+
+Approach 3 (practice):
+This approach is used to select the optimal size, not which pre-
+dictors will end up in our model. Split the dataset into k folds (you decide what k should
+be). We will perform best subset selection within each of the k training sets. Here are more
+detailed instructions:
+
+### i. (practice)For each fold k = 1, . . . , K:
+
+1. Perform best subset selection using all the data except for those in fold k (training
+  set). For each model size, you will obtain a ‘best’ model.
+  
+2. For each ‘best’ model, evaluate the test MSE on the data in fold k (test set).
+  
+3. Store the test MSE for each model.
+  
+Once you have completed this for all k folds, take the average of your test MSEs for
+each model size. In other words, for all k models of size 1, you will compute their k-
+fold cross-validated error. For all the k models of size 2, you will compute their k-fold
+cross-validated errors, and so on. Report your 8 CV errors here.
+
+### ii. (practice)
+Choose the model size that gives you the smallest CV error. Now perform
+best subset selection on the full data set again in order to obtain this final model. Report
+that model here. (For example, suppose cross-validation selected a 5-predictor model.
+I would perform best subset selection on the full data set again in order to obtain the
+5-predictor model.)
+
+
+# Problem 2: Concept Review
+  
+## (a)
+
+For the following statement, state whether or not it is True or False. Briefly justify your
+answer.
+
+Suppose I have 3 models to pick from:
+
+MA :Y ~ X1 + X2 + X3 + X4 + X5
+
+MB :Y ~ X6 + X7 + X8 + X9 + X10
+
+MC :Y ~ X1 + X2 + X7 + X9 + X10
+
+
+Using AIC, BIC, Mallow’s Cp, adjusted R2 could lead us to pick different final models.
+
+
+## (b)
+
+For the following statement, state whether or not it is True or False. Briefly justify your
+answer.
+
+Suppose I have two models:
+
+M3 :Y ~ X1 + X2 + X4
+
+M4 :Y ~ X4 + X5 + X6 + X7
+
+It must be that RSS3 >= RSS4.
+
+## (c)
+
+For the following statement, state whether or not it is True or False. Briefly justify your
+answer.
+
+Suppose I have two models:
+
+M2 :Y ~ X4 + X5
+
+M4 :Y ~ X4 + X5 + X6 + X7
+
+It must be that RSS2 >= RSS4.
+
+## (d)
+(practice) What advantages are there to using AIC/BIC instead of using the test MSE as
+
+
+# Problem 3: Diagnostics for MLR (practice)
+
+(a) List the four assumptions we make when fitting a multiple linear regression model.
+
+(b) True or False? In order to fit a multiple linear regression model (i.e. obtain least square
+estimates), we must have distributional assumptions on the random error term epsilon i. Briefly
+justify your answer.
+
+(c) True or False? The summary(lm()) output automatically gives you p-value for individual
+hypothesis tests: H0 : beta_j = 0 versus H1 : beta_j = 0, j = 1, . . . , p. These hypothesis tests assume
+that the random error term are normally distributed. Briefly justify your answer.
+
+(d) Suppose we want to run some visual diagnostics to check whether or not the linearity as-
+sumption holds. Besides the fact that it is is time consuming, explain why it is not sufficient
+to check every pairwise scatterplot between Y and Xj , j = 1, . . . , p.
+
+(e) To check whether or not the linearity assumption holds, we can run some diagnostics. Let’s
+use the Auto dataset as an example from library(ISLR2). Run the following code:
+
+```{r}
+library(ISLR2)
+m1 = lm(mpg~horsepower,data=Auto)
+summary(m1)
+par(mfrow=c(2,2))
+plot(m1)
+```
+
+Take a look at the plot in the top left corner (titled Residuals vs Fitted). This is what we call
+a residual plot because it is literally a plot of residuals versus fitted values (ˆyi). The red line
+is a smooth fit to the residuals, which is displayed in order to make it easier to identify any
+trends. You should observe that the plot exhibits a clear U-shape, which provides a strong
+indication of non-linearity in the data.
+
+Ideally what we want to see is no discernible pattern in the residual plot and a relatively
+flat red line. A residual plot exhibiting no pattern and a flat red line indicates that the
+linearity assumption for our model holds. Propose a more flexible model than m1 that might
+be able to accommodate some non-linearity. Present your proposed model (call it m2) and its
+corresponding residual plot here. Is it an improvement over m1?
+
+We’ll discuss the remaining plots from plot(m1) and their utility in an upcoming lecture.
+
+
+
+
+
