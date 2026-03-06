@@ -1,0 +1,225 @@
+---
+title: "HW6"
+author: "Nathan Krieger"
+date: "2026-03-06"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 1: Concept Review
+
+## (a)
+
+Best subset selection will produce a collection of p models M1, M2, . . . , Mp. These represent
+the ‘best’ model of each size (where ‘best’ here is defined as the model with the smallest RSS).
+
+### (i) True or False
+
+Is it true that the model identified as Mk+1 must contain a subset of the predictors found
+in Mk? In other words, is it true that if M1 : Y ~ X1, then M2 must also contain X1.
+And if M2 contains X1 and X2, then M3 must also contain X1 and X2?
+
+## (b)
+
+Same question as part (a) but instead of best subset selection, we now carry out forward
+selection.
+
+## (c) (practice)
+
+Suppose we perform best subset selection, forward selection, and backward selection on a training data set.
+
+Best subset selection produces a model with k predictors for each k = 1, . . . , p. Denote
+this model by Mk,subset. For example, when k = 5, M5,subset is the best 5-predictor model
+according to best subset selection.
+
+Similarly, forward selection produces a model with k predictors, denoted by Mk,forward, and
+backward selection produces a model with k predictors, denoted by Mk,backward.
+
+For each case below, state which of the three models would be expected to have the smallest
+training MSE, and briefly explain why.
+
+### (i) (practice) k = 1
+
+Solution: For k = 1, subset has the same model as forward stepwise and therefore the
+same RSS (and training MSE). Backward stepwise may have a different model, and a
+worse RSS.
+
+### (ii) (practice)k ${\epsilon}$ {2, ..., p - 2}
+
+### (iii) (practice)k = p - 1
+
+### (iv) (practice)k = p
+
+
+## (d) (practice)
+
+Same setup as part (c). For a given k, which of these three models has the smallest
+test MSE? Explain your answer.
+
+### (i) k = 1
+
+Solution: Subset and forward stepwise have the same model when k = 1, so they have
+the same test MSE. Backward selection may produce a different model, so its test MSE
+may differ.
+
+### (ii) k = p
+
+###(iii) k = p - 1
+
+# Problem 2: Simulation Studies
+
+We have seen that as the number of features used in a model increases, the training error will
+necessarily decrease, but the test error may not. We will now explore this in a simulated data set.
+Start by generating a data set with p = 20 features, n = 1000 observations, and an associated
+response vector Y generated according to the model:
+
+Y = $\beta$0 + $\beta$1X1 + $\beta$2X2 + . . . $\beta$pXp + $\epsilon$,
+
+You can use this code to get started:
+```{r}
+p = 20
+n = 1000
+error = rnorm(n,0,1)
+beta = c(2, rep(0,5),1.2,3,-2,1.5,7,rep(0,5),3,4,1,9,2)
+Xmat = matrix(rnorm(n*20),n,20)
+X = cbind(rep(1,n),Xmat)
+Y = X%*%beta + error
+data = data.frame(Y,Xmat)
+```
+
+Note that X%*%beta is just doing matrix multiplication: beta0 + beta1*X1 + beta2*X2 + ....
+
+beta20*X20.
+
+## (a) 
+
+Split your data set into a training set containing 100 observations and a test set containing
+900 observations.
+
+## (b) 
+
+Perform best subset selection on the training set only, and plot the training set MSE associated
+with the best model of each size. Hint: The training MSE can be computed from the model
+output. If the fitted model is stored as fit, you can extract it using mean(fit$rss).
+
+## (c) 
+
+Plot the test MSE associated with the best model of each size.
+
+## (d) 
+
+For which model size does the test MSE take on its minimum values? Comment on your
+results.
+
+## (e) 
+
+How does the model at which the test MSE is minimized compare to the true model used
+to generate the data? Comment on how well the estimated regression coefficients match the
+true values.
+
+Note: The true model contains only 10 predictors with nonzero coefficients. The remaining
+10 predictors have true coefficient value equal to zero.
+
+
+# Problem 3: Forward and backward selection (practice)
+
+We will use the College data set in the ISLR2 library to predict the number of applications (Apps)
+each university received. Use all remaining variables as predictors.
+
+## (a) (practice)
+
+Randomly split the data set so that 90% of the data belong to the training set
+and the remaining 10% belong to the test set. Implement forward and backward selection on
+the training set only. Report the test MSE for all models (M1, M2, . . . , Mp) based on forward
+selection. Which model minimizes test MSE?
+
+Report the test MSE for all models (M1, M2, . . . , Mp) based on backward selection. Which
+model minimizes test MSE?
+
+Do both algorithms lead you to the same model based on test MSE?
+
+## (b) (practice)
+
+Run forward and backward selection on the full dataset. For each approach, report
+the best model based on AIC. Do they lead you to the same model based on AIC?
+
+## (c) (practice)
+
+Which is the final model that you would pick? If both (a) and (b) lead you to the
+same model, then this is easy. Otherwise, there is no absolute right answer. Try to justify
+your choice using some ideas/concepts you’ve learned from this class.
+
+
+# Problem 4: A Puzzling Problem
+
+When fitting a linear regression model on a data set, you encounter the following R output. You
+notice there is something strange about the results. Point out what is strange in this output and
+explain clearly how this could happen.
+
+Call:
+lm(formula = y ~ x1 + x2)
+
+
+# Problem 5: Interaction Terms
+
+We will use the Credit dataset for this problem. It is part of the library ISLR2
+
+## (a) 
+
+This data set contains a few categorical predictors. As we already discussed in lecture, these
+predictors should be stored as factors so that R can handle them properly. Using the str
+function, check that all the qualitative predictors in our dataset are stored correctly in R as
+factors. Copy and paste your output.
+
+## (b) 
+
+Fit a model with the response (Y ) as credit card balance and X1= Income and X2 = Student
+as the predictors. Call this model fit. Summarize your output.
+
+## (c)
+
+Based on our results from part (b), write out the fitted model for
+
+### i students
+
+### ii non-students.
+
+## (d)
+
+Interpret the regression coefficient related to Income for both models.
+
+### i students
+
+### ii non-students.
+
+## (e) (practice)
+
+Notice that our model says that regardless of student status, the effect of Income
+on average Balance is the same. Do you think this is a reasonable constraint on our model?
+
+Construct some plots to back up your answer.
+
+##(f) (practice)
+
+One way we could relax this assumption is by incorporating interaction terms into
+our model. Specifically:
+
+Yi = $\beta$0 + $\beta$1Xi1 + $\beta$2Xi2 + $\beta$3Xi3 + $\epsilon$i,
+
+where X1= Income, X2 = Student, and X3 = Income × Student. Fit a model with an
+interaction term using the following code:
+
+```{r}
+# lm(Balance ~ Income + Student + Income:Student, data=Credit)
+```
+
+Based on this model, write out the fitted model for students and write out the fitted model
+for non-students.
+
+## (g) (practice)
+
+Interpret the regression coefficient related to Income for the fitted models obtained
+in part (f).
