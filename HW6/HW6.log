@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  6 MAR 2026 09:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  9 MAR 2026 11:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -349,8 +349,7 @@ File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) (/home/nathan-krieger/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count316
-)
-No file HW6.aux.
+) (./HW6.aux)
 \openout1 = `HW6.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 111.
@@ -482,29 +481,65 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 159.
+(Font)              <10> on input line 166.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 159.
+(Font)              <7> on input line 166.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 159.
+(Font)              <5> on input line 166.
 [1
 
 {/home/nathan-krieger/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}]
-! Missing $ inserted.
-<inserted text> 
-                $
-l.189 Y = \$\beta
-                 \$0 + \$\beta\$1X1 + \$\beta\$2X2 + . . . \(\beta\)pXp +
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
- 
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 217.
+(/home/nathan-krieger/.TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 220.
+[2{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}]
+<HW6_files/figure-latex/unnamed-chunk-3-1.pdf, id=39, 436.63126pt x 248.93pt>
+File: HW6_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type pdf)
+<use HW6_files/figure-latex/unnamed-chunk-3-1.pdf>
+Package pdftex.def Info: HW6_files/figure-latex/unnamed-chunk-3-1.pdf  used on input line 269.
+(pdftex.def)             Requested size: 436.63019pt x 248.92938pt.
+[3 <./HW6_files/figure-latex/unnamed-chunk-3-1.pdf>]
+<HW6_files/figure-latex/unnamed-chunk-4-1.pdf, id=53, 436.63126pt x 248.93pt>
+File: HW6_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (type pdf)
+<use HW6_files/figure-latex/unnamed-chunk-4-1.pdf>
+Package pdftex.def Info: HW6_files/figure-latex/unnamed-chunk-4-1.pdf  used on input line 292.
+(pdftex.def)             Requested size: 436.63019pt x 248.92938pt.
+[4 <./HW6_files/figure-latex/unnamed-chunk-4-1.pdf>] [5]
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 447.
+(/home/nathan-krieger/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
+File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+) [6{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
+<HW6_files/figure-latex/unnamed-chunk-10-1.pdf, id=86, 454.69875pt x 315.1775pt>
+File: HW6_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type pdf)
+<use HW6_files/figure-latex/unnamed-chunk-10-1.pdf>
+Package pdftex.def Info: HW6_files/figure-latex/unnamed-chunk-10-1.pdf  used on input line 545.
+(pdftex.def)             Requested size: 454.69763pt x 315.17673pt.
+[7]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 555.
+(/home/nathan-krieger/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
+File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+) [8 <./HW6_files/figure-latex/unnamed-chunk-10-1.pdf>] [9] (./HW6.aux)
+ ***********
+LaTeX2e <2025-11-01>
+L3 programming layer <2026-01-19>
+ ***********
+ ) 
 Here is how much of TeX's memory you used:
- 13836 strings out of 469471
- 216632 string characters out of 5467771
- 674046 words of memory out of 5000000
- 42231 multiletter control sequences out of 15000+600000
- 676432 words of font info for 110 fonts, out of 8000000 for 9000
+ 14137 strings out of 469471
+ 222139 string characters out of 5467771
+ 677498 words of memory out of 5000000
+ 42444 multiletter control sequences out of 15000+600000
+ 683707 words of font info for 132 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 83i,6n,93p,1000b,458s stack positions out of 10000i,1000n,20000p,200000b,200000s
-!  ==> Fatal error occurred, no output PDF file produced!
+ 83i,6n,93p,1000b,706s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
+Output written on HW6.pdf (9 pages, 317242 bytes).
+PDF statistics:
+ 306 PDF objects out of 1000 (max. 8388607)
+ 257 compressed objects within 3 object streams
+ 47 named destinations out of 1000 (max. 500000)
+ 31032 words of extra memory for PDF output out of 35830 (max. 10000000)
+

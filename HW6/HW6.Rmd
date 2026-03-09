@@ -1,7 +1,7 @@
 ---
 title: "HW6"
 author: "Nathan Krieger"
-date: "2026-03-06"
+date: "2026-03-09"
 output: pdf_document
 ---
 
@@ -22,10 +22,14 @@ Is it true that the model identified as Mk+1 must contain a subset of the predic
 in Mk? In other words, is it true that if M1 : Y ~ X1, then M2 must also contain X1.
 And if M2 contains X1 and X2, then M3 must also contain X1 and X2?
 
+False. Since best subset selection evaluates all possible combinations of predictors and picks the best one, there is no guarantee that it will be a subset. 
+
 ## (b)
 
 Same question as part (a) but instead of best subset selection, we now carry out forward
 selection.
+
+True. Forward selection works by adding the best predictor for each size. So Mk+1 is Mk + one more predictor.
 
 ## (c) (practice)
 
@@ -49,10 +53,15 @@ worse RSS.
 
 ### (ii) (practice)k ${\epsilon}$ {2, ..., p - 2}
 
+Best subset selection. Since it's guaranteed to find the lowest RSS for any k it will be the best. Forward and backward only make the best choice for each size (greedy). 
+
 ### (iii) (practice)k = p - 1
+
+Best subset selection. The same logic as part ii.
 
 ### (iv) (practice)k = p
 
+All three are equal. There's only one model that contains all p predictors so they will all be the same.
 
 ## (d) (practice)
 
@@ -67,7 +76,11 @@ may differ.
 
 ### (ii) k = p
 
-###(iii) k = p - 1
+All three are equal. There is only one model with all p predictors so they will all be the same.
+
+### (iii) k = p - 1
+
+Cannot say. Best subset selection will have the best training MSE but that doesn't mean it will have the lowest test MSE.
 
 # Problem 2: Simulation Studies
 
@@ -76,10 +89,12 @@ necessarily decrease, but the test error may not. We will now explore this in a 
 Start by generating a data set with p = 20 features, n = 1000 observations, and an associated
 response vector Y generated according to the model:
 
-Y = $\beta$0 + $\beta$1X1 + $\beta$2X2 + . . . $\beta$pXp + $\epsilon$,
+Y = $\beta_0$ + $\beta_1$ X1 + $\beta_2$ X2 + . . . $\beta_p$ Xp + $\epsilon$
 
 You can use this code to get started:
+
 ```{r}
+
 p = 20
 n = 1000
 error = rnorm(n,0,1)
@@ -88,6 +103,7 @@ Xmat = matrix(rnorm(n*20),n,20)
 X = cbind(rep(1,n),Xmat)
 Y = X%*%beta + error
 data = data.frame(Y,Xmat)
+
 ```
 
 Note that X%*%beta is just doing matrix multiplication: beta0 + beta1*X1 + beta2*X2 + ....
@@ -99,20 +115,68 @@ beta20*X20.
 Split your data set into a training set containing 100 observations and a test set containing
 900 observations.
 
+```{r}
+
+set.seed(123)
+
+train_indices = sample(1:n, 100)
+train_data = data[train_indices, ]
+test_data = data[-train_indices, ]
+
+```
+
 ## (b) 
 
 Perform best subset selection on the training set only, and plot the training set MSE associated
 with the best model of each size. Hint: The training MSE can be computed from the model
 output. If the fitted model is stored as fit, you can extract it using mean(fit$rss).
 
+```{r}
+
+library(leaps)
+
+regfit_full = regsubsets(Y ~ ., data = train_data, nvmax = 20)
+reg_summary = summary(regfit_full)
+
+train_mse = reg_summary$rss / 100
+
+plot(train_mse)
+
+```
+
 ## (c) 
 
 Plot the test MSE associated with the best model of each size.
+
+```{r}
+
+test_mse = rep(NA, 20)
+test_mat = model.matrix(Y ~ ., data = test_data)
+
+for (i in 1:20) {
+  
+  coefi = coef(regfit_full, id = i)
+  pred = test_mat[, names(coefi)] %*% coefi
+  test_mse[i] = mean((test_data$Y - pred)^2)
+  
+}
+
+plot(test_mse)
+
+```
 
 ## (d) 
 
 For which model size does the test MSE take on its minimum values? Comment on your
 results.
+
+``` {r}
+
+print(which.min(test_mse))
+
+```
+
+The min test MSE comes from 10. This makes sense because the true model only has 10 non-zero predictors so anything more than 10 begins to overfit the data.
 
 ## (e) 
 
@@ -122,6 +186,15 @@ true values.
 
 Note: The true model contains only 10 predictors with nonzero coefficients. The remaining
 10 predictors have true coefficient value equal to zero.
+
+```{r}
+
+# Y is the true model
+cbind(coef(regfit_full, id = 10), beta[beta != 0])
+
+```
+
+# TODO - use math to explain
 
 
 # Problem 3: Forward and backward selection (practice)
@@ -140,6 +213,21 @@ Report the test MSE for all models (M1, M2, . . . , Mp) based on backward select
 model minimizes test MSE?
 
 Do both algorithms lead you to the same model based on test MSE?
+
+```{r}
+
+library(ISLR2)
+library(leaps)
+
+set.seed(123)
+
+n = nrow(College)
+train_id = sample(1:n, 0.9 * n)
+train = College[train_id, ]
+test = College[-train_id, ]
+
+
+```
 
 ## (b) (practice)
 
@@ -162,6 +250,9 @@ explain clearly how this could happen.
 Call:
 lm(formula = y ~ x1 + x2)
 
+The F statistic p-value is saying that at least one of the predictors is significant but the individual p values are telling us that neither predictor is significant. 
+
+The reason for this is high multicollinearity meaning x1 and x2 are highly correlated with each other. When models are highly correlated, the model struggles to see the individual importance of each predictor. 
 
 # Problem 5: Interaction Terms
 
@@ -174,10 +265,30 @@ predictors should be stored as factors so that R can handle them properly. Using
 function, check that all the qualitative predictors in our dataset are stored correctly in R as
 factors. Copy and paste your output.
 
+
+```{r}
+
+library(ISLR2)
+
+str(Credit)
+
+```
+
+Own, Student, Married, and Region are factors. 
+
 ## (b) 
 
 Fit a model with the response (Y ) as credit card balance and X1= Income and X2 = Student
 as the predictors. Call this model fit. Summarize your output.
+
+```{r}
+
+?Credit
+fit <- lm(Balance ~ Income + Student, data = Credit)
+
+
+summary(fit)
+```
 
 ## (c)
 
@@ -185,7 +296,11 @@ Based on our results from part (b), write out the fitted model for
 
 ### i students
 
+students = 211.1430 + 5.9843\*income + 382.6705\*1
+
 ### ii non-students.
+
+non_students = 211.1430 + 5.9843\*income + 382.6705\*0
 
 ## (d)
 
@@ -193,7 +308,11 @@ Interpret the regression coefficient related to Income for both models.
 
 ### i students
 
+Holding students constant (Student = 1). The regression coefficient of income is 5.9843. This means that for every 1 unit (\$1000) increase in income, a student's credit balance increases by \$5.9843.
+
 ### ii non-students.
+
+Holding students constant (Student = 0). The regression coefficient of income is 5.9843. This means that for every 1 unit (\$1000) increase in income, a student's credit balance increases by \$5.9843.
 
 ## (e) (practice)
 
@@ -202,24 +321,53 @@ on average Balance is the same. Do you think this is a reasonable constraint on 
 
 Construct some plots to back up your answer.
 
-##(f) (practice)
+This does not make sense because based on the plots below, it's clear that students carry a higher balance than non-students. 
+
+```{r}
+
+library(ggplot2)
+
+ggplot(Credit, aes(x = Income, y = Balance, color = Student)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Relationship between Income and Balance by Student Status",
+       x = "Income ($1000s)",
+       y = "Balance ($)")
+
+```
+
+## (f) (practice)
 
 One way we could relax this assumption is by incorporating interaction terms into
 our model. Specifically:
 
-Yi = $\beta$0 + $\beta$1Xi1 + $\beta$2Xi2 + $\beta$3Xi3 + $\epsilon$i,
+Yi = $\beta_0$ + $\beta_1$ Xi1 + $\beta_2$ Xi2 + $\beta_3$ Xi3 + $\epsilon$i
 
 where X1= Income, X2 = Student, and X3 = Income × Student. Fit a model with an
 interaction term using the following code:
 
 ```{r}
-# lm(Balance ~ Income + Student + Income:Student, data=Credit)
+
+lm(Balance ~ Income + Student + Income:Student, data=Credit)
+
+
 ```
 
 Based on this model, write out the fitted model for students and write out the fitted model
 for non-students.
 
+students = 200.623 + (6.218 - 1.999) \* Income + 476.676
+
+non_students = 200.623 + 6.218 \* Income
+
 ## (g) (practice)
 
 Interpret the regression coefficient related to Income for the fitted models obtained
 in part (f).
+
+For students, the income coefficient is \$4.219. This means while holding all other predictors fixed, for every 1 unit (\$1000) increase in income, a student's credit balance increases by \$4.219
+
+For non-students, the income coefficient is \$6.218. This means while holding all other predictors fixed, for every 1 unit (\$1000) increase in income, a student's credit balance increases by \$6.218
+
+So, whether or not a person is a student does have an impact on their balance.
+
