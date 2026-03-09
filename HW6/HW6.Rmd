@@ -190,11 +190,13 @@ Note: The true model contains only 10 predictors with nonzero coefficients. The 
 ```{r}
 
 # Y is the true model
-cbind(coef(regfit_full, id = 10), beta[beta != 0])
+diff <- coef(regfit_full, id = 10) - beta[beta != 0]
+
+cbind(coef(regfit_full, id = 10), beta[beta != 0], diff)
 
 ```
 
-# TODO - use math to explain
+I have visualized the differences with the diff column of the chart. As seen in the chart. The biggest difference is ~0.2. 
 
 
 # Problem 3: Forward and backward selection (practice)
@@ -221,18 +223,91 @@ library(leaps)
 
 set.seed(123)
 
-n = nrow(College)
+n <- nrow(College)
+p <- ncol(College) - 1
 train_id = sample(1:n, 0.9 * n)
 train = College[train_id, ]
 test = College[-train_id, ]
 
 
+regfit_fwd <- regsubsets(Apps ~ ., data = train, nvmax = p, nbest = 1, method = "forward")
+regfit_bwd <- regsubsets(Apps ~ ., data = train, nvmax = p, nbest = 1, method = "backward")
+
+
+regfit_fwd_sum <- summary(regfit_fwd)
+regfit_bwd_sum <- summary(regfit_bwd)
+
+forward_test_matrix <- model.matrix(Apps ~ ., data = test)
+backward_test_matrix <- model.matrix(Apps ~ ., data = test)
+forward_test_mse <- rep(NA, p)
+backward_test_mse <- rep(NA, p)
+
+for (i in 1:p) {
+  
+  coefi = coef(regfit_fwd, id = i)
+  pred = forward_test_matrix[, names(coefi)] %*% coefi
+  forward_test_mse[i] = mean((test$Apps - pred)^2)
+  
+  
+  # Backward Calculation
+  coef_bwd = coef(regfit_bwd, id = i)
+  pred_bwd = backward_test_matrix[, names(coef_bwd)] %*% coef_bwd
+  backward_test_mse[i] = mean((test$Apps - pred_bwd)^2)
+}
+
+num_predictors <- rowSums(regfit_fwd_sum$which) - 1
+
+
+plot(num_predictors, forward_test_mse, xlab = "Size of Model", ylab = "Test MSE")
+
+plot(num_predictors, backward_test_mse, xlab = "Size of Model", ylab = "Test MSE")
+
+cat("Best Forward Model size:", which.min(forward_test_mse), "\n")
+cat("Best Backward Model size:", which.min(backward_test_mse), "\n")
+
 ```
+
+Based on my results, 5 has the best Test MSE for both forward and backward selection.
 
 ## (b) (practice)
 
 Run forward and backward selection on the full dataset. For each approach, report
 the best model based on AIC. Do they lead you to the same model based on AIC?
+
+```{r}
+
+fit_fwd_full <- regsubsets(Apps ~ ., data = College, nvmax = p, method = "forward")
+fit_bwd_full <- regsubsets(Apps ~ ., data = College, nvmax = p, method = "backward")
+
+sum_fwd_full <- summary(fit_fwd_full)
+sum_bwd_full <- summary(fit_bwd_full)
+
+rss_fwd <- sum_fwd_full$rss
+
+AIC_fwd <- n * log(rss_fwd / n) + 2 * p
+
+rss_bwd <- sum_bwd_full$rss
+
+AIC_bwd <- n * log(rss_bwd / n) + 2 * p
+
+AIC_fwd
+AIC_bwd
+
+best_fwd_aic <- which.min(sum_fwd_full$cp)
+best_bwd_aic <- which.min(sum_bwd_full$cp)
+
+cat("Best Forward model size (AIC):", best_fwd_aic, "\n")
+cat("Best Backward model size (AIC):", best_bwd_aic, "\n")
+
+vars_fwd <- names(coef(fit_fwd_full, best_fwd_aic))
+vars_bwd <- names(coef(fit_bwd_full, best_bwd_aic))
+
+vars_fwd
+vars_bwd
+
+```
+
+The models are identical.
 
 ## (c) (practice)
 
@@ -240,6 +315,7 @@ Which is the final model that you would pick? If both (a) and (b) lead you to th
 same model, then this is easy. Otherwise, there is no absolute right answer. Try to justify
 your choice using some ideas/concepts you’ve learned from this class.
 
+Since both models are identical, either would work. 
 
 # Problem 4: A Puzzling Problem
 
