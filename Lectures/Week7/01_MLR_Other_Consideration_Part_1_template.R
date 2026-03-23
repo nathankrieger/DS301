@@ -92,7 +92,6 @@ vif(fit2)
 
 ## Simple solutions to multicollinearity? 
 
-
 ########################
 ## In-class Activity  ##
 ########################
@@ -101,48 +100,40 @@ vif(fit2)
 ## You can load your data into R using: 
 #insurance=read.csv("/.../insurance.csv") 
 
-insurance = read.csv("~/git/DS301/Lectures/Week7/insurance.csv")
+insurance = read.csv(file.choose(), header = TRUE)
 ## Specify your pathway to be where you saved this file. 
 
 ## 1. This data set contains a few categorical predictors. 
 ## 1.1 Check that all the categorical predictors in our dataset
 ##     are stored correctly using str()
-
 str(insurance)
 
 ## 1.2 If they are not, fix it. Copy and paste your output here. 
 ## Hint: change predictors to factor predictor with as.factor function
 ## Example, df$age<- as.factor(df$age)
 
+insurance$gender <- as.factor(insurance$gender)
 insurance$smoker <- as.factor(insurance$smoker)
 insurance$region <- as.factor(insurance$region)
-insurance$gender <- as.factor(insurance$gender)
 
-#'data.frame':	1338 obs. of  7 variables:
-#$ age     : Factor w/ 47 levels "18","19","20",..: 2 1 11 16 15 14 29 20 20 43 ...
-#$ gender  : Factor w/ 2 levels "female","male": 1 2 2 2 2 1 1 1 2 1 ...
-#$ bmi     : num  27.9 33.8 33 22.7 28.9 ...
-#$ children: Factor w/ 6 levels "0","1","2","3",..: 1 2 4 1 1 1 2 4 3 1 ...
-#$ smoker  : Factor w/ 2 levels "no","yes": 2 1 1 1 1 1 1 1 1 1 ...
-#$ region  : Factor w/ 4 levels "northeast","northwest",..: 4 3 3 2 2 3 3 2 1 2 ...
-#$ charges : num  16885 1726 4449 21984 3867 ...
+str(insurance)
 
 ## 2. 
 ## 2.1 Fit a model with the response (Y) as health care charges and predictors
 ## x_1 = age, x2 = bmi, and x3 = gender. 
 
-m <- lm (charges ~ age + bmi + gender, data = insurance)
-
-summary(m)
+# m1 <- lm(y ~ age + bmi + gender, data = insurance)
+fit <- lm(charges ~ age + bmi + gender, data = insurance)
+summary(fit)
 
 ## 2.2 Based on your output, write out the fitted model's equation
 ##     for males only (gendermale = 1)
 
-#charges = -6986.82 + 243.19 * age + 327.54 * bmi + 1344.46 * gendermale
+# charges = -6986.82 + 243.19 * insurance$age + 327.54 * insurance$bmi
 
 ## 2.3 write out the fitted model's equation for females only (gendermale = 0). 
 
-#charges = -6986.82 + 243.19 * age + 327.54 * bmi + 1344.46 * 0
+# charges = -6986.82 + 243.19 * insurance$age + 327.54 * insurance$bmi
 
 ## 3. Your classmate tells you that including gender as a dummy variable in the model is not necessary. 
 ## Instead you can just fit a model for males only and a separate model for females only.
@@ -159,26 +150,24 @@ females <- insurance[insurance$gender=='female',]
 ## males <- subset(insurance, sex == "male")
 
 fit_males <- lm(charges ~ age + bmi, data = males)
-
 summary(fit_males)
 
 ## 3.3 Now do the same for the female group. Call this model fit_females. 
 
 fit_females <- lm(charges ~ age + bmi, data = females)
-
 summary(fit_females)
 
 ## 3.4 Based on your output, write out both model's estimated regression coefficients.
 
-
-
+#     males:    charges = -8012.79 + 238.63 * age + 409.87 * bmi
+#     females:  charges = -4515.22 + 246.92 * age + 241.32 * bmi
 
 ## 4. Compare your results in part 2 with part 3. 
 ## 4.1 Are they equivalent? 
 
-
+# no
 
 ## 4.2 Explain in plain language to your classmate 
 ## why these two approaches will not give the same results. 
 
-
+# the model is trained on different subsets of data
