@@ -26,13 +26,25 @@ library(leaps)
 
 set.seed(123)
 
-
-best_model <- regsubsets(medv ~ ., data = Boston, nbest = 1, nvmax = 12)
+# part a
+best_model <- regsubsets(medv ~ ., data = Boston, nbest = 1, nvmax = 13)
 
 summary(best_model)
+
+# part b
 smallest <- which.min(summary(best_model)$bic)
 
 best <- coef(best_model, id = smallest)
+
+# part c
+reduced <- Boston[ , !(names(Boston) %in% c("rad", "tax"))]
+regfit_reduced <- regsubsets(medv ~ ., data = reduced, nbest = 1, nvmax = 11)
+# After checking assumptions
+final_fit <- lm(medv ~ crim + zn + chas + nox + poly(rm, degree = 2) + dis + rad + tax + ptratio + poly(lstat, degree = 2) , data = Boston)
+
+
+# part d
+final_fit <- lm(medv ~ crim + zn + chas + nox + poly(rm, degree = 2) + dis + ptratio + poly(lstat, degree = 2), data = Boston)
 
 ```
 
@@ -43,11 +55,12 @@ Report your final model and its regression coefficients in a nicely summarized t
 
 ```{r}
 
+smallest <- which.min(summary(regfit_reduced)$bic)
+
+best <- coef(regfit_reduced, id = smallest)
 knitr::kable(best)
 
 ```
-
-TODO: write something
 
 ## (b)
 
@@ -61,12 +74,13 @@ To find which predictors should be left out of the model, I used best subset sel
 ```{r}
 
 res_sum <- summary(best_model)
+best_aic <- which.min(res_sum$cp)
+best_r2  <- which.max(res_sum$adjr2)
+opt_size <- which.min(res_sum$bic)
 
 par(mfrow = c(1, 2))
 plot(res_sum$bic, type = "b", pch = 19, col = "navy", main = "BIC vs Model Size")
 points(opt_size, res_sum$bic[opt_size], col = "red", cex = 2, pch = 4, lwd = 2)
-
-plot(best_subset, scale = "bic", main = "Variable Inclusion Grid")
 
 plot(res_sum$cp, type = "b", pch = 19, col = "firebrick", 
      xlab = "Number of Variables", ylab = "Cp (AIC Proxy)",
@@ -80,16 +94,69 @@ points(best_r2, res_sum$adjr2[best_r2], col = "red", cex = 2, pch = 4, lwd = 2)
 
 ```
 
+As the plots above display, 10 predictors is the best size for this model. The code itself handles the selection of this model (using regsubsets). To determine which predictors to include in the final model, I used Best Subset Selection. This is an exhaustive search method that evaluates every possible combination of the 13 available predictors. I selected the model that minimized the BIC. In the problem below, I check if the assumptions we made are true.
+
 ## (c) 
 
 What assumptions were needed to obtain this final model? Are there any diagnostic checks
 you made to ensure those assumptions were valid? Did you update your final model to
 accommodate any assumption violations?
 
+Linearity
+Independence
+Constant variance
+Normality of errors
+
+```{r}
+
+library(car)
+
+# Linearity
+
+par(mfrow = c(2, 2))
+plot(final_fit)
+
+plot(final_fit, which = 1)
+
+plot(Boston$lstat, residuals(final_fit))
+abline(h = 0, col = "red")
+
+crPlots(final_fit)
+
+# Independence
+
+# plot(final_fit)
+
+# Constant variance
+library(lmtest)
+bptest(final_fit)
+
+
+# Normality of errors
+
+plot(final_fit, which = 2)
+
+```
+
+Based on the plots above, I applied poly to rm and lstat in the final model. This is because their charts appeared curved. 
+To check for independence I used the plot(final_fit).
+To check for constant variance I used the bptest method. I found that the variance is sufficiently constant based on the low p-value.
+I checked for normality of errors by plotting plot(final_fit, which = 2) and observed a roughly straight line, so no adjustment was needed. 
+
+
 ## (d) 
 
 Were there any potential issues related to your final model that you explored? Did you
 address these issues once identified?
+
+
+``` {r}
+
+vif(final_fit)
+
+```
+
+Yes. Based on the VIF method, I removed the rad and tax from the final model due to their high multicollinearity. 
 
 ## (e) 
 
@@ -101,6 +168,12 @@ effort to produce a report that is rigorous but understandable to non-statistici
 tions/strengths of your pipeline to build this model should be discussed. Your workflow should be
 thoughtfully justified using the concepts/ideas we have discussed in class.
 
+To obtain the bias, you need the true relationship (f(x)) which we do not have. To obtain variance the same is true. 
+
+Our model likely has some bias because we assumed a mostly linear relationship. If the true relationship is curved, the model is inherently biased.
+
+Because we used BIC to select a smaller subset of variables, the variance of the model is lower compared to using all 13 predictors. This means our price predictions will be more stable if applied to a different suburb of Boston.
+
 
 # Problem 2: Follow-up to in-class activity
 
@@ -111,7 +184,7 @@ a refresher.
 Clearly the models in Part 2 and Part 3 are not equivalent. Explain again in plain language
 (using plots if you deem it helpful) why these two approaches will not give the same results.
 
-Running two separate models assumes that all coefficients are different. Running one model with just a gender dummy variable assumes only the intercept is different while the slopes for other variables stay the same.
+Running one model with just a gender dummy variable assumes only the intercept is different while the slopes for other variables stay the same. Running two separate models assumes that all coefficients are different.
 
 ## (b) 
 Load in the Insurance dataset again. Show how you can modify the model in Part 2 so that
@@ -156,7 +229,7 @@ Based on my analysis. The p-value of the full model is 0.2607. This is much high
 Is multicollinearity a problem for making accurate predictions? Make an educated guess
 based on what we have learned in class.
 
-I would say no. It makes it hard to determine the effect of individual variables, the model remains accurate.
+I would say no. It makes it hard to determine the effect of individual variables, but the model remains accurate.
 
 ## (b) 
 Let us carry out a simulation study to answer this. We will simulate data with and without
@@ -241,6 +314,7 @@ for(i in 1:2500) {
 }
 
 hist(test_mse)
+mean(test_mse)
 
 
 ```
@@ -295,16 +369,16 @@ for(i in 1:2500) {
 }
 
 hist(test_mse)
+mean(test_mse)
 
 ```
 
-Based on the plot: the mean is the same (~4).
+Based on the plot: the mean is the same (~4). This means that the correlation is not hurting the model.
 
 ## (g) 
 Based on our simulation study, is multicollinearity a problem for making accurate predictions?
 Comment on your findings.
 
 No. We can see both test MSEs are about the same. Multicollinearity increases variance but the variance cancels out.
-
-
+Both simulations have a mean test MSE around 4. 
 

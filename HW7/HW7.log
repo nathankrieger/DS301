@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  23 MAR 2026 15:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  23 MAR 2026 19:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -552,44 +552,79 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
 [1
 
 {/home/nathan-krieger/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}] [2]
-LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 283.
-(/home/nathan-krieger/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
-File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [3{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}] [4]
-Overfull \vbox (0.7973pt too high) detected at line 491
+<HW7_files/figure-latex/unnamed-chunk-3-1.pdf, id=24, 437.635pt x 283.0575pt>
+File: HW7_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type pdf)
+<use HW7_files/figure-latex/unnamed-chunk-3-1.pdf>
+Package pdftex.def Info: HW7_files/figure-latex/unnamed-chunk-3-1.pdf  used on input line 266.
+(pdftex.def)             Requested size: 437.63393pt x 283.0568pt.
+<HW7_files/figure-latex/unnamed-chunk-3-2.pdf, id=25, 202.7575pt x 283.0575pt>
+File: HW7_files/figure-latex/unnamed-chunk-3-2.pdf Graphic file (type pdf)
+<use HW7_files/figure-latex/unnamed-chunk-3-2.pdf>
+Package pdftex.def Info: HW7_files/figure-latex/unnamed-chunk-3-2.pdf  used on input line 277.
+(pdftex.def)             Requested size: 202.757pt x 283.0568pt.
+[3 <./HW7_files/figure-latex/unnamed-chunk-3-1.pdf>]
+<HW7_files/figure-latex/unnamed-chunk-4-1.pdf, id=38, 457.71pt x 288.07625pt>
+File: HW7_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (type pdf)
+<use HW7_files/figure-latex/unnamed-chunk-4-1.pdf>
+Package pdftex.def Info: HW7_files/figure-latex/unnamed-chunk-4-1.pdf  used on input line 314.
+(pdftex.def)             Requested size: 457.7089pt x 288.07553pt.
+[4 <./HW7_files/figure-latex/unnamed-chunk-3-2.pdf>]
+<HW7_files/figure-latex/unnamed-chunk-4-2.pdf, id=52, 442.65375pt x 114.4275pt>
+File: HW7_files/figure-latex/unnamed-chunk-4-2.pdf Graphic file (type pdf)
+<use HW7_files/figure-latex/unnamed-chunk-4-2.pdf>
+Package pdftex.def Info: HW7_files/figure-latex/unnamed-chunk-4-2.pdf  used on input line 327.
+(pdftex.def)             Requested size: 442.65265pt x 114.42722pt.
+<HW7_files/figure-latex/unnamed-chunk-4-3.pdf, id=53, 449.68pt x 314.17375pt>
+File: HW7_files/figure-latex/unnamed-chunk-4-3.pdf Graphic file (type pdf)
+<use HW7_files/figure-latex/unnamed-chunk-4-3.pdf>
+Package pdftex.def Info: HW7_files/figure-latex/unnamed-chunk-4-3.pdf  used on input line 328.
+(pdftex.def)             Requested size: 449.6789pt x 314.17297pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 327--329
+[][]
  []
 
-[5]
-<HW7_files/figure-latex/unnamed-chunk-7-1.pdf, id=49, 422.57875pt x 285.065pt>
-File: HW7_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (type pdf)
-<use HW7_files/figure-latex/unnamed-chunk-7-1.pdf>
-Package pdftex.def Info: HW7_files/figure-latex/unnamed-chunk-7-1.pdf  used on input line 493.
+[5 <./HW7_files/figure-latex/unnamed-chunk-4-1.pdf> <./HW7_files/figure-latex/unnamed-chunk-4-2.pdf>]
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 348.
+(/home/nathan-krieger/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
+File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+<HW7_files/figure-latex/unnamed-chunk-4-4.pdf, id=72, 207.77625pt x 124.465pt>
+File: HW7_files/figure-latex/unnamed-chunk-4-4.pdf Graphic file (type pdf)
+<use HW7_files/figure-latex/unnamed-chunk-4-4.pdf>
+Package pdftex.def Info: HW7_files/figure-latex/unnamed-chunk-4-4.pdf  used on input line 378.
+(pdftex.def)             Requested size: 207.77573pt x 124.46469pt.
+[6{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc} <./HW7_files/figure-latex/unnamed-chunk-4-3.pdf>] [7 <./HW7_files/figure-latex/unnamed-chunk-4-4.pdf>] [8] [9] [10]
+<HW7_files/figure-latex/unnamed-chunk-10-1.pdf, id=120, 422.57875pt x 285.065pt>
+File: HW7_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type pdf)
+<use HW7_files/figure-latex/unnamed-chunk-10-1.pdf>
+Package pdftex.def Info: HW7_files/figure-latex/unnamed-chunk-10-1.pdf  used on input line 675.
 (pdftex.def)             Requested size: 422.57771pt x 285.0643pt.
-[6 <./HW7_files/figure-latex/unnamed-chunk-7-1.pdf>]
-<HW7_files/figure-latex/unnamed-chunk-9-1.pdf, id=63, 422.57875pt x 285.065pt>
-File: HW7_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (type pdf)
-<use HW7_files/figure-latex/unnamed-chunk-9-1.pdf>
-Package pdftex.def Info: HW7_files/figure-latex/unnamed-chunk-9-1.pdf  used on input line 562.
+[11 <./HW7_files/figure-latex/unnamed-chunk-10-1.pdf>]
+<HW7_files/figure-latex/unnamed-chunk-12-1.pdf, id=134, 422.57875pt x 285.065pt>
+File: HW7_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type pdf)
+<use HW7_files/figure-latex/unnamed-chunk-12-1.pdf>
+Package pdftex.def Info: HW7_files/figure-latex/unnamed-chunk-12-1.pdf  used on input line 754.
 (pdftex.def)             Requested size: 422.57771pt x 285.0643pt.
-[7 <./HW7_files/figure-latex/unnamed-chunk-9-1.pdf>] [8] (./HW7.aux)
+[12 <./HW7_files/figure-latex/unnamed-chunk-12-1.pdf>] [13] (./HW7.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 14402 strings out of 469471
- 226645 string characters out of 5467771
- 689597 words of memory out of 5000000
- 42749 multiletter control sequences out of 15000+600000
- 663191 words of font info for 104 fonts, out of 8000000 for 9000
+ 14459 strings out of 469471
+ 229081 string characters out of 5467771
+ 689603 words of memory out of 5000000
+ 42791 multiletter control sequences out of 15000+600000
+ 663606 words of font info for 109 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  83i,6n,93p,1000b,721s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on HW7.pdf (8 pages, 208083 bytes).
+Output written on HW7.pdf (13 pages, 666042 bytes).
 PDF statistics:
- 181 PDF objects out of 1000 (max. 8388607)
- 148 compressed objects within 2 object streams
- 28 named destinations out of 1000 (max. 500000)
- 18587 words of extra memory for PDF output out of 20736 (max. 10000000)
+ 253 PDF objects out of 1000 (max. 8388607)
+ 197 compressed objects within 2 object streams
+ 33 named destinations out of 1000 (max. 500000)
+ 18617 words of extra memory for PDF output out of 20736 (max. 10000000)
 
