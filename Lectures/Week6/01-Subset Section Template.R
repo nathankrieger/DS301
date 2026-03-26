@@ -38,7 +38,6 @@ colSums(is.na(Hitters))
 
 Hitters <- na.omit(Hitters)
 
-
 # Verify that missing values have been removed
 
 dim(Hitters)
@@ -106,7 +105,6 @@ cbind(p, rss, adjr2, cp, aic, bic)
 # Plot BIC and AIC values to visualize model selection
 plot(p, bic)
 plot(p, aic)
-
 
 # Identify the best model based on different selection criteria
 # Find model with the lowest BIC 

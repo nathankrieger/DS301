@@ -5,6 +5,7 @@
 library(ISLR2)
 library(leaps)
 
+## the predict() function does not work on regsubsets objects, 
 
 head(Hitters)
 Hitters <- na.omit(Hitters)
@@ -26,7 +27,6 @@ test <- Hitters[-train_index,]
 
 best_train <- regsubsets(Salary ~ ., data = train, nbest = 1, nvmax = 19)
   
-## the predict() function does not work on regsubsets objects, 
 # so we need to write our own code to obtain our predicted values:
 
 # Convert the test dataset into a model matrix (needed for matrix multiplication)
@@ -136,9 +136,9 @@ for (i in 1:k) {
   # Inner loop: Iterate through each model size (1 to max_models)
   # Calculate cv error (test MSE) 
   for (j in 1:max_models) {  
-    test.mat = model.matrix(Salary ~ ., data = test_data)
-    coef.m = coef(regfit, id = j)    
-    pred = test.mat[, names(coef.m)] %*% coef.m 
+    test_mat = model.matrix(Salary ~ ., data = test_data)
+    coef_m = coef(regfit, id = j)    
+    pred = test_mat[, names(coef_m)] %*% coef_m 
     cv_errors[i, j] = mean((test_data$Salary - pred)^2) 
   }
   
