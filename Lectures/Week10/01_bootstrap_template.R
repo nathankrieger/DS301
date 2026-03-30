@@ -24,7 +24,7 @@ summary(fit_orig)$coef
 beta0_star <- summary(fit_orig)$coef[1,1]
 
 # Standard error of beta_0 from original lm
-se_b0_star <- ____________
+se_b0_star <- summary(fit_orig)$coef[1,2]
 
 par(mfrow = c(2, 2))
 plot(fit_orig)
@@ -36,23 +36,22 @@ plot(fit_orig)
 
 
 # Sample size
-n <- ______
+n <- nrow(Auto)
 
 # Number of bootstrap samples
 B <- 2000
 
 # Store bootstrap estimates of the intercept
-beta0_boot <- numeric(____)
+beta0_boot <- numeric(B)
 
 
 for (b in 1:B) {
-  boot_index <- sample(1:n, size = n, replace = _____)
+  boot_index <- sample(1:n, size = n, replace = TRUE)
   boot_sample <- Auto[boot_index, ]
   
-  fit_boot <- lm(mpg ~ horsepower, data = _______)
-  beta0_boot[__] <- __________
+  fit_boot <- lm(mpg ~ horsepower, data = boot_sample)
+  beta0_boot[b] <- fit_boot$coef[1]
 }
-
 # Bootstrap estimate of the standard error of beta_0
 mean(beta0_boot)
 
@@ -136,26 +135,25 @@ library(ISLR2)
 head(Boston)
 
 # Sample size
-n <- ________
+n <- nrow(Boston)
 
 # (1) Estimate the population mean of medv
-mu_hat <- mean(________)
+mu_hat <- mean(Boston$medv)
 mu_hat
 
 # (2) Use bootstrap to estimate the standard error of mu_hat (medv mean)
 B <- 2000
 
-_____________ (something to store boot mean, how many do we have ?)
+boot_mean <- numeric(B) # (something to store boot mean, how many do we have ?)
 
 for (b in 1:B) {
-  boot_index <- _______
-  boot_sample <- _______
+  boot_index <- sample(1:n, size = n, replace = TRUE)
+  boot_sample <- Boston$medv[boot_index]
   
-  ____________________
-  
+  boot_mean[b] <- mean(boot_sample)
 }
 
-se_boot <- _______
+se_boot <- sd(boot_mean)
 se_boot
 
 # (3) Analytical standard error
@@ -164,7 +162,7 @@ se_boot
 # As sample size increases, the mean becomes more stable.
 # The variability shrinks at a rate of 1/sqrt(n).
 # We use sample sd (s = sd(Boston$medv)) to estimate unknown population sd (sigma).
-se_analytic <- ____________
+se_analytic <- sd(Boston$medv) / sqrt(n)
 se_analytic
 
 # Compare the two
@@ -173,4 +171,3 @@ c(bootstrap_SE = se_boot, analytic_SE = se_analytic)
 
 ## Work in groups to come up with a solution. 
 ## Please be sure to list all your group members names. Only one group member needs to post on Ed Discussion. 
-

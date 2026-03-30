@@ -1,5 +1,6 @@
 library(ISLR2)
-library(glmnet)   # install.packages("glmnet") if needed
+library(glmnet)   
+#install.packages("glmnet")
 
 ################################################
 ## Regularized Regression with glmnet()
@@ -16,6 +17,7 @@ head(Hitters)
 ## It cannot directly handle factor variables the same way lm() does.
 ## So we use model.matrix() to convert everything into the right format.
 x <- 
+  
 
 ## Response variable
 y <- 

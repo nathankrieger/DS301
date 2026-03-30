@@ -1,3 +1,12 @@
+
+
+
+# alpha = 1 means lasso regression
+# alpha = 0 is ridge
+
+
+
+
 library(ISLR2)
 library(glmnet)   # install.packages("glmnet") if needed
 
@@ -44,7 +53,7 @@ ridge_model <- glmnet(x, y, alpha = 0, lambda = grid)
 ## Rows = intercept + predictors
 ## Columns = one column for each lambda value in the grid
 coef(ridge_model)
-dim(coef(ridge_model))
+dim(coef(ridge_model)) # so we have 100 different sets of coefficients since our grid is size 100
 
 ## Look at coefficients for the 50th lambda value in the grid
 ridge_model$lambda[50]
@@ -127,6 +136,9 @@ lasso_model <- glmnet(x, y, alpha = 1, lambda = grid)
 ################################################
 
 set.seed(1)
+
+# alpha = 1 means lasso regression
+# alpha = 0 is ridge
 cv_out_lasso <- cv.glmnet(x_train, y_train, alpha = 1, lambda = grid)
 
 # if plot(cv.out) doesn't work

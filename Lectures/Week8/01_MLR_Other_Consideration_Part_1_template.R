@@ -48,6 +48,7 @@ y = 0.7*x1 + 0.3*x2 + rnorm(100, 0, sqrt(15))
 # Fit models with and without x3
 m1 = lm(y~x1+x2+x3+x4) #
 
+# x3 is NA because it doesn't add any new info at all. Its just x1 and x2
 summary(m1)
 
 m2 = lm(y~x1+x2+x4)  # 
@@ -62,6 +63,12 @@ vif(m1)
 
 m2 = lm(y~x1+x2+x4)
 vif(m2)
+
+# VIF Values:
+# 1 -> no multicollinearity
+# 1<x<5 -> moderate correlation (acceptable)
+# >5 -> high multicollinearity (bad)
+# >10 -> sever multicollinearity
 
 #######################
 #### data example #####

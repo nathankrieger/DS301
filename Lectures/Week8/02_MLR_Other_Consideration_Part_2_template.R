@@ -4,7 +4,7 @@ head(Auto)
 plot(Auto$mpg, Auto$horsepower)
 
 # Fit a simple linear regression model: mpg ~ horsepower
-m1 = lm()
+m1 = lm(mpg ~ horsepower, data = Auto)
 
 summary(m1)
 
@@ -16,12 +16,11 @@ par(mfrow=c(2,2))
 # 3. Scale-Location: Checks homoscedasticity (constant variance).
 # 4. Residuals vs. Leverage: Identifies influential points.
 
-
+plot(m1)
 
 ##################################
 #### Exploring Transformations ###
 ##################################
-
 
 # More of an art than a science
 par(mfrow=c(2,2))
@@ -29,15 +28,15 @@ par(mfrow=c(2,2))
 plot(m1, which=3)# Extract only the third plot: scale-location residual plot 
 
 # log(mpg)
-m2 <- lm(~horsepower,data=Auto)
+m2 <- lm(log(mpg)~horsepower,data=Auto)
 plot(m2, which = 3)# Extract only the third plot: scale-location residual plot 
 
 # log(horsepower)
-m3 <- lm(mpg~),data=Auto)
+m3 <- lm(mpg ~ log(horsepower),data=Auto)
 plot(m3, which=3)
 
 # horsepower^2
-m4 <- lm(mpg~,data=Auto)
+m4 <- lm(mpg~ (horsepower^2),data=Auto)
 plot(m4, which=3)
 
 
@@ -86,7 +85,7 @@ fit.4 <- lm(wage ~ poly(age,4), data = Wage)  # 4th-degree polynomial
 fit.5 <- lm(wage ~ poly(age,5), data = Wage)  # 5th-degree polynomial
 
 # Compare models using ANOVA to test whether adding higher-degree terms improves fit
-anova()
+anova(fit.1, fit.2, fit.3, fit.4, fit.5)
 
 # Interpretation:
 # Lower-degree models may underfit, while higher-degree models are not justified.
@@ -104,11 +103,11 @@ train_wage <- Wage[train_index,]
 test_wage <- Wage[-train_index,]
 
 # Fit polynomial models on the training data
-fit.1 <- lm(wage ~ age, data = )
-fit.2 <- lm(wage ~ poly(age,2), data = )
-fit.3 <- lm(wage ~ poly(age,3), data = )
-fit.4 <- lm(wage ~ poly(age,4), data = )
-fit.5 <- lm(wage ~ poly(age,5), data = )
+fit.1 <- lm(wage ~ age, data = train_wage)
+fit.2 <- lm(wage ~ poly(age,2), data = train_wage)
+fit.3 <- lm(wage ~ poly(age,3), data = train_wage)
+fit.4 <- lm(wage ~ poly(age,4), data = train_wage)
+fit.5 <- lm(wage ~ poly(age,5), data = train_wage)
 
 # Compute training MSE for each model
 MSE_train1 <- mean((train_wage$wage - fit.1$fitted.values)^2) 
@@ -118,18 +117,18 @@ MSE_train4 <- mean((train_wage$wage - fit.4$fitted.values)^2)
 MSE_train5 <- mean((train_wage$wage - fit.5$fitted.values)^2) 
 
 # Plot training MSE vs. polynomial degree
-degree <- 
+degree <- c(1:5)
 
 plot(degree, c(MSE_train1, MSE_train2, MSE_train3, MSE_train4, MSE_train5), type = 'b', 
      xlab = "Polynomial Degree", ylab = "Training MSE")
 
 
 ## Compute Test MSE for polynomial models up to degree 11
-test_MSE = rep(NA, )
+test_MSE = rep(NA, 11)
 
 for(i in 1:11){
-  fit = lm(wage ~ poly(age, ), data = train_wage)
-  predicted_values = predict(fit, newdata = )
+  fit = lm(wage ~ poly(age, degree = i), data = train_wage)
+  predicted_values = predict(fit, newdata = test_wage)
   test_MSE[i] = mean((test_wage$wage - predicted_values)^2)
 }
 
