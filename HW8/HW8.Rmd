@@ -93,7 +93,7 @@ library(ISLR2)
 
 set.seed(12)
 
-x <- model.matrix(Apps ~ ., data = College)
+x <- model.matrix(Apps ~ ., data = College)[,-1]
 y <- College$Apps
 
 train <- sample(1:nrow(x), nrow(x) / 2)

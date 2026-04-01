@@ -1,3 +1,9 @@
+
+
+# Categorical predictors - real data
+# Multicollinearity - real and fake data
+
+
 ##############################
 ### Qualitative predictors ###
 ##############################
@@ -13,8 +19,8 @@ m1 <- lm(Balance ~ Limit + Region, data = Credit)
 # What are the fitted regression lines for each category of region? 
 
 ## Can change baseline:
-
 Credit$Region <- relevel(Credit$Region, ref = "East")
+
 m2 <- lm(Balance ~ Limit + Region, data = Credit)
 
 # Compare models with and without "Region"
@@ -23,7 +29,7 @@ fit2 <- lm(Balance~Limit+Student+Married,data=Credit)
 
 # Conduct a partial F-test to determine if "Region" improves the model
 
-anova(fit1, fit2)
+anova(fit1, fit2) # These predictors are bad but that's not because they are categorical
 
 
 ##############################
@@ -136,7 +142,7 @@ summary(fit)
 ## 2.2 Based on your output, write out the fitted model's equation
 ##     for males only (gendermale = 1)
 
-# charges = -6986.82 + 243.19 * insurance$age + 327.54 * insurance$bmi
+# charges = -6986.82 + 243.19 * insurance$age + 327.54 * insurance$bmi + 1344.54*gendermale
 
 ## 2.3 write out the fitted model's equation for females only (gendermale = 0). 
 
@@ -148,6 +154,9 @@ summary(fit)
 
 ## 3.1. Subset your data into two groups: data for males and data for females. 
 ##  HINT for filtering a dataframe 
+
+###################################################################################################
+# WRONG WAY TO DO IT:
 
 males <- insurance[insurance$gender=='male',]
 females <- insurance[insurance$gender=='female',]

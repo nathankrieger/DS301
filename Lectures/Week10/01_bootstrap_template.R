@@ -34,7 +34,6 @@ plot(fit_orig)
 ## Bootstrap Standard Error  ##
 ###############################
 
-
 # Sample size
 n <- nrow(Auto)
 
@@ -117,7 +116,7 @@ confint(fit_orig)
 ########################
 ## In-class Activity  ##
 ########################
-
+  
 ## Let's practice bootstrap on the Boston dataset (part of library(ISLR2))
 ## (1) Based on this data set, provide an estimate for the population mean of medv. Call this muhat.
 ## (2) Estimate the standard error of muhat using bootstrap.

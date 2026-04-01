@@ -1,4 +1,9 @@
 
+# Finding optimal model size using best subset selection with validation set and k-fold cross validation
+# REAL DATA
+# REPEATED WITH FAKE DATA AT THE BOTTOM
+
+
 ########################################################
 ###### Combining CV with 'best' subset selection #######
 ########################################################
@@ -46,6 +51,8 @@ for (i in 1:19) {
 
   # Calculate MSE
   test_mse[i] <- mean((pred - test$Salary)^2)
+  
+  
 }
 
 test_mse
@@ -146,7 +153,7 @@ for (i in 1:k) {
 
 # Compute the average cross-validation error for each model size  
 mean_cv_errors = colMeans(cv_errors)
-print(mean_cv_errors)
+print(mean_cv_errors) # Test MSE for each model size
 
 # Identify the best model size based on the minimum cross-validation error  
 optimal_size = which.min(mean_cv_errors)
@@ -163,6 +170,101 @@ abline(v = optimal_size, col = "red")
 
 # Train the final model using the optimal number of predictors
 final_model <- regsubsets(Salary ~ ., data = Hitters, nvmax = optimal_size)
+
+# Get the selected predictors for the final model
+final_coeffs <- coef(final_model, id = optimal_size)
+print("Final Model Coefficients:")
+print(final_coeffs)
+
+
+###########################################################################################
+############################## THE SAME THING WITH FAKE DATA ##############################
+###########################################################################################
+
+library(ISLR2)
+library(leaps)
+
+set.seed(10)
+
+n = 100
+X1 = seq(0,10,length.out = n) #generates 100 equally spaced values from 0 to 10.
+X2 = runif(n) #generates 100 uniform values.
+error = rnorm(n,0,1)
+Y = 2 + 3*X1 + 5*log(X2) + error
+
+df <- data.frame(Y, X1, X2)
+
+
+train_index <- sample(1:n,n/2,rep=FALSE)
+train <- df[train_index,]
+test <- df[-train_index,]
+
+best_train <- regsubsets(Y ~ ., data = train, nbest = 1, nvmax = 2)
+
+test_mse <- rep(NA, 2)
+test_mat <- model.matrix(Y ~ ., data = test)
+for (i in 1:2) {
+  
+  coef_m <- coef(best_train, id = i)
+  
+  pred <- test_mat[ , names(coef_m)]%*%coef_m
+  
+  test_mse[i] <- mean((pred - test$Y)^2)
+  
+  
+}
+
+test_mse
+optimal_size <- which.min(test_mse)
+optimal_size
+
+final_model <- regsubsets(Y ~ ., data = df, nvmax = optimal_size)
+
+final_coeffs <- coef(final_model, id = optimal_size)
+
+library(caret)
+
+set.seed(10) 
+
+k = 10
+flds = createFolds(df$Y, k = k, list = TRUE) 
+
+max_models = 2
+
+cv_errors = matrix(NA, nrow = k, ncol = max_models)
+
+for (i in 1:k) {  
+  test_index = flds[[i]]  
+  test_data = df[test_index, ]  # Validation set
+  train_data = df[-test_index, ]  # Training set
+  
+  regfit = regsubsets(Y ~ ., data = train_data, nbest = 1, nvmax = max_models)
+  
+  # Inner loop: Iterate through each model size (1 to max_models)
+  # Calculate cv error (test MSE) 
+  for (j in 1:max_models) {  
+    test_mat = model.matrix(Y ~ ., data = test_data)
+    coef_m = coef(regfit, id = j)    
+    pred = test_mat[, names(coef_m)] %*% coef_m 
+    cv_errors[i, j] = mean((test_data$Y - pred)^2) 
+  }
+  
+}
+
+# Compute the average cross-validation error for each model size  
+mean_cv_errors = colMeans(cv_errors)
+print(mean_cv_errors) # Test MSE for each model size
+
+# Identify the best model size based on the minimum cross-validation error  
+optimal_size = which.min(mean_cv_errors)
+print(paste("Optimal model size:", optimal_size))
+
+# Plot cross-validation errors to visualize model performance  
+plot(mean_cv_errors, type = "b")
+abline(v = optimal_size, col = "red")
+
+# Train the final model using the optimal number of predictors
+final_model <- regsubsets(Y ~ ., data = df, nvmax = optimal_size)
 
 # Get the selected predictors for the final model
 final_coeffs <- coef(final_model, id = optimal_size)

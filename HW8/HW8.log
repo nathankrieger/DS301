@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  30 MAR 2026 11:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  30 MAR 2026 17:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -532,7 +532,7 @@ Here is how much of TeX's memory you used:
  36 hyphenation exceptions out of 8191
  83i,6n,93p,1000b,712s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on HW8.pdf (11 pages, 280477 bytes).
+Output written on HW8.pdf (11 pages, 280480 bytes).
 PDF statistics:
  244 PDF objects out of 1000 (max. 8388607)
  198 compressed objects within 2 object streams

@@ -1,3 +1,7 @@
+
+# Non linear data
+# Getting test MSE for each degree
+
 library(ISLR2)
 head(Auto)
 
@@ -39,8 +43,6 @@ plot(m3, which=3)
 m4 <- lm(mpg~ (horsepower^2),data=Auto)
 plot(m4, which=3)
 
-
-
 ##################################
 ##### Polynomial Regression ######
 ##################################
@@ -60,7 +62,6 @@ plot(m_new)
 par(mfrow=c(1,2))
 plot(m1,which=3)# Residual plot for simple linear regression
 plot(m_new,which=3)# Residual plot for polynomial regression
-
 
 
 

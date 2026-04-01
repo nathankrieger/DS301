@@ -1,3 +1,8 @@
+
+# Real data regfit
+# AIC, BIC, Cp, Adjr^2 calculations
+
+
 ############################
 ##### Subset Selection #####
 ############################
@@ -11,7 +16,7 @@ library(ISLR2)   # Contains the 'Hitters' dataset
 
 # Display the first few rows of the dataset
 head(Hitters)
-
+ncol(Hitters)
 # Display information about Hitter
 ?Hitters
 
@@ -85,7 +90,7 @@ rss <- regfit_summary$rss
 
 p <- rowSums(regfit_summary$which)
 
-# AIC
+# AIC.
 
 aic <- n*log(rss / n) + 2*p
 

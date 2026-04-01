@@ -25,6 +25,8 @@ Read in the prostate data set using the following code:
 
 prostate = read.table('~/git/DS301/HW5/prostate.data',header=TRUE)
 
+head(prostate)
+
 ```
 
 Our response of interest here is the log prostate-specific antigen (lpsa). We will use this data set

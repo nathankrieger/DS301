@@ -1,5 +1,6 @@
 
-
+# Ridge and lasso 
+# Finding the best lambda with cross validation
 
 # alpha = 1 means lasso regression
 # alpha = 0 is ridge
@@ -24,7 +25,7 @@ head(Hitters)
 ## glmnet() only takes numerical predictors.
 ## It cannot directly handle factor variables the same way lm() does.
 ## So we use model.matrix() to convert everything into the right format.
-x <- model.matrix(Salary ~ ., data = Hitters)[, -1]
+x <- model.matrix(Salary ~ ., data = Hitters)[, -1] # The [, -1] removes the intercept column
 
 ## Response variable
 y <- Hitters$Salary
@@ -92,7 +93,7 @@ cv_out_ridge <- cv.glmnet(x_train, y_train, alpha = 0, lambda = grid)
 # Mac: use quartz()
 # Windows: windows()
 
-quartz()
+#quartz()
 plot(cv_out_ridge)
 
 
