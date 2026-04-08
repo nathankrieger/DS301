@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  8 APR 2026 10:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  8 APR 2026 11:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -490,35 +490,35 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
 
 {/home/nathan-krieger/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}] [2]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 286.
+(Font)              <10> on input line 328.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 286.
+(Font)              <7> on input line 328.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 286.
+(Font)              <5> on input line 328.
 
-Underfull \hbox (badness 1270) in paragraph at lines 285--289
+Underfull \hbox (badness 1270) in paragraph at lines 327--331
 \T1/lmr/m/n/10 (+20) We will use a well-known dataset to prac-tice clas-si-fi-ca-tion. You can find it here: []$h t t p s : //$[]
  []
 
-[3] (./HW9.aux)
+[3] [4] [5] [6] (./HW9.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 13923 strings out of 469471
- 218010 string characters out of 5467771
- 674481 words of memory out of 5000000
+ 13926 strings out of 469471
+ 218028 string characters out of 5467771
+ 675481 words of memory out of 5000000
  42302 multiletter control sequences out of 15000+600000
  674454 words of font info for 113 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  83i,6n,93p,1000b,671s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on HW9.pdf (3 pages, 188445 bytes).
+Output written on HW9.pdf (6 pages, 198789 bytes).
 PDF statistics:
- 118 PDF objects out of 1000 (max. 8388607)
- 98 compressed objects within 1 object stream
- 18 named destinations out of 1000 (max. 500000)
+ 132 PDF objects out of 1000 (max. 8388607)
+ 108 compressed objects within 2 object streams
+ 21 named destinations out of 1000 (max. 500000)
  24689 words of extra memory for PDF output out of 24883 (max. 10000000)
 

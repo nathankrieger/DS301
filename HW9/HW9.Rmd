@@ -139,11 +139,30 @@ our investment. One can show that the value that minimizes the risk is given by
 which needs to be estimated from the data.
 
 The Portfolio data set in the ISLR2 package contains data for 100 pairs of stock returns.
-The R script alpha fn.R will compute ˆa for you for this data set. Use bootstrap to quan-
+The R script alpha_fn.R will compute ˆa for you for this data set. Use bootstrap to quan-
 tify the accuracy of our estimate of ˆa. In other words, estimate the standard error using
 bootstrap.
 
 
+``` {r}
+
+library(boot)
+
+alpha.fn = function(data, index) {
+  X = data$X[index]
+  Y = data$Y[index]
+  (var(Y) - cov(X, Y)) / (var(X) + var(Y) - 2 * cov(X, Y))}
+
+set.seed(1)
+
+boot_results <- boot(data = Portfolio, statistic = alpha.fn, R = 1000)
+
+print(boot_results)
+
+se_alpha <- sd(boot_results$t)
+cat("The bootstrap estimate of the standard error for alpha is:", se_alpha)
+
+```
 
 # Problem 3: Email Spam
 
@@ -153,6 +172,7 @@ load the dataset onto your computer. To load this data into R, use the following
 
 ```{r}
 spam = read.csv("spambase.data", header = FALSE)
+
 ```
 
 The last column of the spam data set, called V58, denotes whether the e-mail was considered
@@ -163,11 +183,69 @@ spam (1) or not (0).
 What proportion of emails are classified as spam and what proportion of emails are
 non-spam?
 
+```{r}
+
+non_spam <- spam[spam$V58 == 0, ]
+
+nrow(non_spam)
+
+spam_spam <- spam[spam$V58 == 1, ]
+
+nrow(spam_spam)
+
+non_spam_proportion <- nrow(non_spam) / (nrow(non_spam) + nrow(spam_spam))
+non_spam_proportion
+
+```
+
 ## (b) 
 
 Carefully split the data into training and testing sets. Check to see that the proportions
 of spam vs. non-spam in your training and testing sets are similar to what you observed
 in part (a). Report those proportions here.
+
+``` {r}
+
+set.seed(123)
+
+n <- nrow(spam)
+
+train_index <- sample(1:n, n / 2, replace = FALSE)
+
+train <- spam[train_index, ]
+test  <- spam[-train_index, ]
+
+# Non spam proportions
+
+# Overall
+non_spam_proportion
+
+# Train
+non_spam_train <- train[train$V58 == 0, ]
+
+nrow(non_spam_train)
+
+spam_train <- train[train$V58 == 1, ]
+
+nrow(spam_train)
+
+non_spam_proportion_train <- nrow(non_spam_train) / (nrow(non_spam_train) + nrow(spam_train))
+non_spam_proportion_train
+
+# Test
+non_spam_test <- test[test$V58 == 0, ]
+
+nrow(non_spam_test)
+
+spam_test <- test[test$V58 == 1, ]
+
+nrow(spam_test)
+
+non_spam_proportion_test <- nrow(non_spam_test) / (nrow(non_spam_test) + nrow(spam_test))
+non_spam_proportion_test
+
+
+```
 
 ## (c) 
 
@@ -176,6 +254,17 @@ all variables as predictors (except for V58) to train the model. Use the predict
 function to predict the probability that an email in our data set will be spam or not.
 Print the first ten predicted probabilities from your test set.
 
+
+``` {r}
+
+glm_fit <- glm(V58 ~ ., data = train, family = "binomial")
+
+glm_probs <- predict(glm_fit, newdata = test, type = "response")
+
+glm_probs[1:10]
+
+```
+
 ## (d) 
 
 We can convert these probabilities into labels. If the predicted probability is greater
@@ -183,9 +272,38 @@ than 0.5, then we predict the email is spam ( ˆYi = 1); otherwise it is not spa
 Create a confusion matrix based on your results. What is the overall misclassification
 rate? Break this down and report the false negative rate and false positive rate.
 
+```{r}
+
+glm_pred <- rep(0, nrow(test))
+glm_pred[glm_probs > 0.5] <- 1
+
+# Create the Confusion Matrix
+# Row = Predicted, Column = Actual
+conf_matrix <- table(Predicted = glm_pred, Actual = test$V58)
+print(conf_matrix)
+
+# 1. Overall Misclassification Rate
+# (False Positives + False Negatives) / Total
+misclass_rate <- mean(glm_pred != test$V58)
+
+# False Positive Rate
+fpr <- conf_matrix[2, 1] / sum(conf_matrix[, 1])
+
+# False Negative Rate
+fnr <- conf_matrix[1, 2] / sum(conf_matrix[, 2])
+
+cat("Overall Misclassification Rate:", misclass_rate, "\n")
+cat("False Positive Rate (Email -> Spam):", fpr, "\n")
+cat("False Negative Rate (Spam -> Inbox):", fnr, "\n")
+```
+
+
 ## (e) 
 
 What type of mistake do we think is more critical here: reporting a meaningful email as
 spam or a spam email as meaningful? How can we adjust our classifier to accommodate
 this?
+
+Reporting a non spam email is more meaningful because missing an important email can be costly for a user. 
+To accommodate for this we could use a higher threashold for determining spam. Instead of 0.5 we could use 0.8 for example.
 
