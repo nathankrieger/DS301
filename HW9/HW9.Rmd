@@ -1,0 +1,191 @@
+---
+title: "HW9"
+author: "Nathan Krieger"
+date: "2026-04-08"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Problem 1: Bootstrap
+
+We will work with the Boston housing data set from the ISLR2 library. The first part of
+this problem is similar to our in-class activity on Bootstrap.
+
+## (a)
+
+Based on this data set, provide an estimate for the population mean of medv. Call this
+estimate ˆu. 
+
+
+```{r}
+
+library(ISLR2)
+
+n <- nrow(Boston)
+
+# (1) Estimate the population mean of medv
+mu_hat <- mean(Boston$medv)
+mu_hat
+
+
+```
+
+
+
+## (b) 
+
+Provide an estimate of the standard error of ˆu using an analytical formula. Interpret
+this result.
+
+```{r}
+
+se_analytic <- sd(Boston$medv) / sqrt(n)
+se_analytic
+
+```
+
+## (c) 
+
+Now estimate the standard error of ˆu using the bootstrap. How does this compare to
+your answer from part (b)?
+
+```{r}
+
+B <- 2000
+
+boot_mean <- numeric(B) # (something to store boot mean, how many do we have ?)
+
+for (b in 1:B) {
+  boot_index <- sample(1:n, size = n, replace = TRUE)
+  boot_sample <- Boston$medv[boot_index]
+  
+  boot_mean[b] <- mean(boot_sample)
+}
+
+se_boot <- sd(boot_mean)
+se_boot
+
+c(bootstrap_SE = se_boot, analytic_SE = se_analytic)
+
+```
+
+## (d) 
+
+Using bootstrap, provide a 95% confidence interval for the mean of medv. Compare it
+to the results using analytical formulas.
+
+
+``` {r}
+
+# 95% bootstrap percentile confidence interval
+boot_ci <- quantile(boot_mean, c(0.025, 0.975))
+
+t_score <- qt(0.975, df = n - 1)
+analytic_ci <- c(mu_hat - t_score * se_analytic, mu_hat + t_score * se_analytic)
+
+# Results
+list(Bootstrap_CI = boot_ci, Analytic_CI = analytic_ci)
+
+```
+
+## (e) 
+
+Based on this data set, provide an estimate ˆumed for the median value of medv.
+
+
+``` {r}
+
+med_hat <- median(Boston$medv)
+med_hat
+
+```
+
+## (f) 
+
+We would like to estimate the standard error of ˆumed. Since there is no simple formula
+for computing the standard error of the median, use bootstrap. Comment on your
+findings.
+
+``` {r}
+
+set.seed(1)
+B <- 2000
+boot_median <- numeric(B)
+
+for (b in 1:B) {
+  boot_index <- sample(1:n, size = n, replace = TRUE)
+  boot_sample <- Boston$medv[boot_index]
+  boot_median[b] <- median(boot_sample)
+}
+
+se_median_boot <- sd(boot_median)
+se_median_boot
+
+```
+
+# Problem 2: Bootstrap Investments (practice)
+
+Suppose we wish to invest a fixed sum of money into two financial assets that yield
+returns of X and Y , respectively. We will invest a fraction a of our money in X and invest
+the remaining 1 - a in Y . We want to find the value of a that minimizes the total risk of
+our investment. One can show that the value that minimizes the risk is given by
+
+[FORMULA]
+
+which needs to be estimated from the data.
+
+The Portfolio data set in the ISLR2 package contains data for 100 pairs of stock returns.
+The R script alpha fn.R will compute ˆa for you for this data set. Use bootstrap to quan-
+tify the accuracy of our estimate of ˆa. In other words, estimate the standard error using
+bootstrap.
+
+
+
+# Problem 3: Email Spam
+
+We will use a well-known dataset to practice classification. You can find it here: https://
+archive.ics.uci.edu/ml/datasets/Spambase. Read the attribute information and down-
+load the dataset onto your computer. To load this data into R, use the following code:
+
+```{r}
+spam = read.csv("spambase.data", header = FALSE)
+```
+
+The last column of the spam data set, called V58, denotes whether the e-mail was considered
+spam (1) or not (0).
+
+## (a) 
+
+What proportion of emails are classified as spam and what proportion of emails are
+non-spam?
+
+## (b) 
+
+Carefully split the data into training and testing sets. Check to see that the proportions
+of spam vs. non-spam in your training and testing sets are similar to what you observed
+in part (a). Report those proportions here.
+
+## (c) 
+
+Fit a logistic regression model on the training set and evaluate it on the test set. Use
+all variables as predictors (except for V58) to train the model. Use the predict()
+function to predict the probability that an email in our data set will be spam or not.
+Print the first ten predicted probabilities from your test set.
+
+## (d) 
+
+We can convert these probabilities into labels. If the predicted probability is greater
+than 0.5, then we predict the email is spam ( ˆYi = 1); otherwise it is not spam ( ˆYi = 0).
+Create a confusion matrix based on your results. What is the overall misclassification
+rate? Break this down and report the false negative rate and false positive rate.
+
+## (e) 
+
+What type of mistake do we think is more critical here: reporting a meaningful email as
+spam or a spam email as meaningful? How can we adjust our classifier to accommodate
+this?
+
