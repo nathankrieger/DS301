@@ -1,0 +1,127 @@
+---
+title: "HW10"
+author: "Nathan Krieger"
+date: "2026-04-17"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 1: Weekly Dataset
+
+We will use the Weekly data set from the ISLR2 library. It contains 1,089 weekly returns for
+21 years, from the beginning of 1990 to 2010.
+
+## (a) 
+
+Use the full data set to perform a logistic regression with Direction as the response
+and the five lag variables plus Volume as predictors. Use the summary function to
+report your results.
+
+## (b) 
+
+Set a threshold of 0.5. Compute the confusion matrix and overall correct classification
+rate. Explain what the confusion matrix is telling you about the types of mistakes
+made by logistic regression.
+
+## (c) 
+
+Now fit the logistic regression model using a training data period from 1990 to 2008,
+with Lag2 as the only predictor. Set a threshold of 0.5. Compute the confusion matrix
+and overall correct classification rate on the test set (that is, data from 2009 and 2010).
+
+## (d) Repeat (c) using LDA.
+
+## (e) Repeat (c) using QDA.
+
+## (f) Repeat (c) using Naive Bayes.
+
+# Problem 2: Bootstrap again
+
+We will use a heart disease data set for this problem. To see information on the data and
+how to load it into R, check the heart.R file. You can download the data from Canvas or
+read the data from the website directly.
+
+## (a)
+
+Fit a logistic regression model on the entire dataset with chd as the response and age
+as the only predictor. Based on the model you just fit, what is the predicted probability
+that Y = 1 given age = 50? We'll denote this as ˆP (Y = 1 | age = 50). Report that
+probability here.
+
+Note: make sure that age is a data.frame: x = data.frame(age = 50).
+
+## (b)
+
+Bootstrap the standard error of ˆP (Y = 1 | age = 50). Report the standard error here.
+
+# Problem 3: Concept Review
+
+Suppose you split a data set into a training set and a test set, both of which have a sample
+size of 2,500. For simplicity, let's assume that p = 1 (only one predictor) and the response
+is Y = 0 or Y = 1. We obtain the following estimates for the training set:
+
+ˆ ${\mu}$ 0 = 3.4, ˆ ${\mu}$ 1 = 5.1, ˆ ${\sigma}$ 2 = 4, ˆ ${\pi}$ 0 = 0.32, ˆ ${\pi}$ 1 = 0.68,
+and for the test set:
+ˆ ${\mu}$ 0 = 3.2, ˆ ${\mu}$ 1 = 5.5, ˆ ${\sigma}$ 2 = 4.5, ˆ ${\pi}$ 0 = 0.35, ˆ ${\pi}$ 1 = 0.65.
+
+We assume that the predictor X1 given the response follows a normal distribution and
+that the variance between the two classes is the same. Based on this information, write out
+the linear discriminant function for Y as a function of X1. Explain when a test observation
+will be assigned to Y = 0 and when it will be assigned to Y = 1.
+
+Hint: If you find yourself needing to do some complicated math derivation, then stop.
+
+Rethink the question. Your classification rule should involve real numbers from the estimates
+(ˆ ${\mu}$, ˆ ${\sigma}$ 2, etc.) given above.
+
+
+# Problem 4: MNIST handwritten digit database
+
+Load the handwritten digits (MNIST) dataset into R using the R scripts we went over in
+class.
+
+## (a) 
+
+Randomly select 3000 observations from the training set and randomly select 100
+observations from the test set. Implement KNN classification. Report the following:
+
+• Carry out 10-fold cross-validation on the training set to determine the optimal
+K. Try K = 1, 5, 7, 9. What is the optimal K?
+
+• Use this optimal K to implement KNN classification on the test set. Report your
+confusion matrix and misclassification error rate on the test set.
+
+## (b) 
+
+Try to implement LDA on the MNIST dataset. What kind of error message do you
+obtain? Do some digging and explain what this error message means.
+## (c) 
+
+Discuss how this dataset highlights some of the advantages of using KNN for classifi-
+cation.
+
+
+# Problem 5: Fashion MNIST (practice)
+
+Many people consider the handwritten digits database to be far too easy for classifiers these
+days. More challenging datasets have appeared as new benchmarks. One example is the
+fashion MNIST dataset: https://github.com/zalandoresearch/fashion-mnist. Read
+up on the documentation for this dataset. Then, just like we did with the handwritten digits
+database, download the training and test set for this data. Load it into R using the same R
+scripts used in Problem 1.
+
+## (a) 
+
+Produce plots of the first 5 observations in the training set. What do you see?
+
+## (b) 
+
+Repeat the workflow from Problem 4(a) for this dataset. How do your confusion
+matrices and misclassification error rates compare?
+
+
+
+

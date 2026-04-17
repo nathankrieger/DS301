@@ -6,10 +6,7 @@ dim(Default)
 
 # Split the data into training and test sets
 set.seed(7)
-train_index <- sample(1:nrow(Default), nrow(Default) / 2, replace = FALSE)
 
-train_set <- Default[train_index, ]
-test_set  <- Default[-train_index, ]
 
 # Fit logistic regression on the training data
 glm.fit <- glm(default ~ student + balance, data = train_set, family = 'binomial')

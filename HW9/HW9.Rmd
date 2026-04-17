@@ -34,8 +34,6 @@ mu_hat
 
 ```
 
-
-
 ## (b) 
 
 Provide an estimate of the standard error of ˆu using an analytical formula. Interpret
@@ -48,6 +46,8 @@ se_analytic
 
 ```
 
+This number means that on average the population mean of medv will vary by 0.4088611 from the actual value
+
 ## (c) 
 
 Now estimate the standard error of ˆu using the bootstrap. How does this compare to
@@ -55,6 +55,7 @@ your answer from part (b)?
 
 ```{r}
 
+set.seed(1)
 B <- 2000
 
 boot_mean <- numeric(B) # (something to store boot mean, how many do we have ?)
@@ -77,7 +78,6 @@ c(bootstrap_SE = se_boot, analytic_SE = se_analytic)
 
 Using bootstrap, provide a 95% confidence interval for the mean of medv. Compare it
 to the results using analytical formulas.
-
 
 ``` {r}
 
@@ -115,17 +115,23 @@ findings.
 set.seed(1)
 B <- 2000
 boot_median <- numeric(B)
-
+boot_mean <- numeric(B)
 for (b in 1:B) {
   boot_index <- sample(1:n, size = n, replace = TRUE)
   boot_sample <- Boston$medv[boot_index]
   boot_median[b] <- median(boot_sample)
+  boot_mean[b] <- mean(boot_sample)
 }
 
 se_median_boot <- sd(boot_median)
 se_median_boot
 
+se_mean_boot <- sd(boot_mean)
+se_mean_boot
+
 ```
+
+Based on the numbers, median is more stable than mean in this case. We can also see that the standard error is relatively small.
 
 # Problem 2: Bootstrap Investments (practice)
 
@@ -171,6 +177,7 @@ archive.ics.uci.edu/ml/datasets/Spambase. Read the attribute information and dow
 load the dataset onto your computer. To load this data into R, use the following code:
 
 ```{r}
+
 spam = read.csv("spambase.data", header = FALSE)
 
 ```
@@ -195,6 +202,8 @@ nrow(spam_spam)
 
 non_spam_proportion <- nrow(non_spam) / (nrow(non_spam) + nrow(spam_spam))
 non_spam_proportion
+
+1 - non_spam_proportion
 
 ```
 
