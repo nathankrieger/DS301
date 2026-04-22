@@ -48,7 +48,7 @@ test.Y <- Caravan$Purchase[test]
 # Fit k-NN with k = 1
 # ------------------------------
 set.seed(1)
-knn.pred <- ______________
+knn.pred <- knn(train.X, test.X)
 head(knn.pred)
 
 # Confusion matrix

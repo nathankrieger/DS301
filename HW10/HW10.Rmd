@@ -20,11 +20,41 @@ Use the full data set to perform a logistic regression with Direction as the res
 and the five lag variables plus Volume as predictors. Use the summary function to
 report your results.
 
+``` {r}
+
+library(ISLR2)
+
+head(Weekly)
+
+glm_fit_full <- glm(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume, 
+                    data = Weekly, 
+                    family = "binomial")
+
+summary(glm_fit_full)
+
+
+```
+
 ## (b) 
 
 Set a threshold of 0.5. Compute the confusion matrix and overall correct classification
 rate. Explain what the confusion matrix is telling you about the types of mistakes
 made by logistic regression.
+
+
+
+```{r}
+
+glm_probs_full <- predict(glm_fit_full, type = "response")
+
+
+glm_pred_full <- rep("Down", length(glm_probs_full))
+glm_pred_full[glm_probs_full > 0.5] <- "Up"
+
+
+mean(glm_pred_full == Weekly$Direction)
+
+```
 
 ## (c) 
 
@@ -32,11 +62,69 @@ Now fit the logistic regression model using a training data period from 1990 to 
 with Lag2 as the only predictor. Set a threshold of 0.5. Compute the confusion matrix
 and overall correct classification rate on the test set (that is, data from 2009 and 2010).
 
-## (d) Repeat (c) using LDA.
 
-## (e) Repeat (c) using QDA.
+```{r}
 
-## (f) Repeat (c) using Naive Bayes.
+train <- Weekly[Weekly$Year <= 2008, ]
+test <- Weekly[Weekly$Year > 2008, ]
+
+glm_fit_split <- glm(Direction ~ Lag2, data = train, family = "binomial")
+
+glm_probs_split <- predict(glm_fit_split, newdata = test, type = "response")
+
+glm_pred_test <- rep("Down", length(glm_probs_split))
+glm_pred_test[glm_probs_split > 0.5] <- "Up"
+
+table(Predicted = glm_pred_test, Actual = test$Direction)
+mean(glm_pred_test == test$Direction)
+
+```
+
+## (d) 
+
+Repeat (c) using LDA.
+
+```{r}
+
+library(MASS)
+
+lda_fit <- lda(Direction ~ Lag2, data = train)
+lda_pred <- predict(lda_fit, newdata = test)
+
+table(Predicted = lda_pred$class, Actual = test$Direction)
+mean(lda_pred$class == test$Direction)
+
+```
+
+## (e) 
+
+Repeat (c) using QDA.
+
+```{r}
+
+qda_fit <- qda(Direction ~ Lag2, data = train)
+qda_pred <- predict(qda_fit, newdata = test)
+
+table(Predicted = qda_pred$class, Actual = test$Direction)
+mean(qda_pred$class == test$Direction)
+
+```
+## (f) 
+
+Repeat (c) using Naive Bayes.
+
+```{r}
+
+library(e1071)
+
+nb_fit <- naiveBayes(Direction ~ Lag2, data = train)
+nb_pred <- predict(nb_fit, newdata = test)
+
+table(Predicted = nb_pred, Actual = test$Direction)
+mean(nb_pred == test$Direction)
+
+```
+
 
 # Problem 2: Bootstrap again
 
@@ -53,9 +141,45 @@ probability here.
 
 Note: make sure that age is a data.frame: x = data.frame(age = 50).
 
+``` {r}
+
+heart = read.table('https://hastie.su.domains/ElemStatLearn/datasets/SAheart.data', sep=",",head=T,row.names=1)
+
+glm_heart <- glm(chd ~ age, data = heart, family = "binomial")
+
+new_data <- data.frame(age = 50)
+prob_age_50 <- predict(glm_heart, newdata = new_data, type = "response")
+
+cat("Predicted probability P(Y=1 | age=50):", prob_age_50, "\n")
+
+```
+
 ## (b)
 
 Bootstrap the standard error of ˆP (Y = 1 | age = 50). Report the standard error here.
+
+
+``` {r}
+
+library(boot)
+
+prob_boot_fn <- function(data, index) {
+  fit <- glm(chd ~ age, data = data, subset = index, family = "binomial")
+  
+  pred <- predict(fit, newdata = data.frame(age = 50), type = "response")
+  
+  return(pred)
+}
+
+set.seed(1)
+boot_results <- boot(data = heart, statistic = prob_boot_fn, R = 2000)
+
+se_boot_prob <- sd(boot_results$t)
+
+print(boot_results)
+cat("Bootstrap SE of the predicted probability:", se_boot_prob, "\n")
+
+```
 
 # Problem 3: Concept Review
 
@@ -77,6 +201,31 @@ Hint: If you find yourself needing to do some complicated math derivation, then 
 Rethink the question. Your classification rule should involve real numbers from the estimates
 (ˆ ${\mu}$, ˆ ${\sigma}$ 2, etc.) given above.
 
+From class we have:
+
+${\delta}_k(x_1) = x_1 \frac{\mu_k}{\sigma^2} - \frac{\mu_k^2}{2\sigma^2} + log(\pi_k)$
+
+So for Y = 0:
+
+${\delta}_0(x) = x \frac{3.4}{4} - \frac{3.4^2}{2*4} + log(0.32)$
+${\delta}_0(x) = 0.85x - 2.584$
+
+For Y = 1:
+
+${\delta}_1(1) = x \frac{5.1}{4} - \frac{5.1^2}{2*4} + log(0.68)$
+
+${\delta}_1(x) = 1.275x - 3.637$
+
+
+Set them equal to each other:
+
+$1.275x - 3.637 = 0.85x - 2.584$
+
+$x = 2.478$
+
+If a test observation x is greater than 2.478 it will be assigned to Y = 1.
+If a test observation x is less than 2.478 it will be assigned to Y = 0.
+
 
 # Problem 4: MNIST handwritten digit database
 
@@ -94,14 +243,117 @@ K. Try K = 1, 5, 7, 9. What is the optimal K?
 • Use this optimal K to implement KNN classification on the test set. Report your
 confusion matrix and misclassification error rate on the test set.
 
+```{r}
+
+
+set.seed(1)
+
+library(caret)
+library(class)
+#install.packages("dslabs")
+library(dslabs)
+
+# Reading in data
+mnist <- read_mnist()
+
+index_train <- sample(1:nrow(mnist$train$images), 3000)
+index_test  <- sample(1:nrow(mnist$test$images), 100)
+
+x_train <- mnist$train$images[index_train, ]
+y_train <- as.factor(mnist$train$labels[index_train])
+
+x_test  <- mnist$test$images[index_test, ]
+y_test  <- as.factor(mnist$test$labels[index_test])
+
+# see the picture for 5th observation
+#i <- 5
+#image(1:28, 1:28, matrix(mnist$test$images[i,], nrow=28)[ , 28:1], 
+#      col = gray(seq(0, 1, 0.05)), xlab = "", ylab="")
+## the labels for this image is: 
+#mnist$test$labels[i]
+
+
+#index.train = sample(1:dim(train$x)[1], 3000, replace = FALSE)
+#index.test = sample(1:dim(test$x)[1], 100, replace = FALSE)
+
+#sample_x = train$x[index.train, ]
+#sample_y = train$y[index.train]
+
+# KNN CV
+K = c(1, 3, 5, 7, 9)
+fold <- 10
+cv_error <- matrix(NA, nrow = length(K), ncol = fold)
+
+folds <- cut(seq(1, nrow(x_train)), breaks = fold, labels = FALSE)
+
+cv_errors <- matrix(NA, nrow = length(K), ncol = fold)
+
+for (i in 1:length(K)) {
+  
+  k_val <- K[i]
+  
+  for (j in 1:fold) {
+    
+    val_indices <- which(folds == j, arr.ind = TRUE)
+    
+    cv_train_x <- x_train[-val_indices, ]
+    cv_train_y <- y_train[-val_indices]
+    
+    cv_val_x <- x_train[val_indices, ]
+    cv_val_y <- y_train[val_indices]
+    
+    # Run KNN for this fold
+    pred <- knn(train = cv_train_x, test = cv_val_x, cl = cv_train_y, k = k_val)
+    
+    # Store the error rate for this fold
+    cv_errors[i, j] <- mean(pred != cv_val_y)
+    
+  }
+  
+
+}
+
+
+mean_cv_errors <- rowMeans(cv_errors)
+optimal_k <- K[which.min(mean_cv_errors)]
+
+cat("Optimal K based on 10-fold CV:", optimal_k, "\n")
+
+final_pred <- knn(train = x_train, test = x_test, cl = y_train, k = optimal_k)
+
+conf_matrix <- table(Predicted = final_pred, Actual = y_test)
+print(conf_matrix)
+
+test_error <- mean(final_pred != y_test)
+cat("Test Error Rate with K =", optimal_k, ":", test_error, "\n")
+
+```
+
 ## (b) 
 
 Try to implement LDA on the MNIST dataset. What kind of error message do you
 obtain? Do some digging and explain what this error message means.
+
+```{r}
+
+# (b) LDA attempt on MNIST
+#lda_model <- lda(x = x_train, grouping = y_train)
+
+```
+
+I get an error that the pixels appear to be constant within groups. This is because there are certain spots of the image that are never a part of the number. For example, the corners of the image for the number 1. This means they have zero variance and provide no evidence for the model to weigh. Behind the scenes there is a division by zero that is happening. 
+
+
 ## (c) 
 
-Discuss how this dataset highlights some of the advantages of using KNN for classifi-
-cation.
+Discuss how this dataset highlights some of the advantages of using KNN for classification.
+
+
+KNN makes no assumptions on the distribution unlike LDA.
+
+LDA tries to find one average which is a problem for different writing styles, KNN just looks for the closest neighbor.
+
+KNN doesn't care if some pixels are constant.
 
 
 # Problem 5: Fashion MNIST (practice)
@@ -117,6 +369,23 @@ scripts used in Problem 1.
 
 Produce plots of the first 5 observations in the training set. What do you see?
 
+```{r}
+
+#load_mnist()
+
+show_digit <- function(arr784, col = gray(12:1/12), ...) {
+  image(matrix(arr784, nrow = 28)[, 28:1], col = col, ...)
+}
+
+par(mfrow = c(1, 5))
+for (i in 1:5) {
+  show_digit(train$x[i, ], main = paste("Label:", train$y[i]))
+}
+
+```
+
+This is a harder problem than the numbers because of the complicated, unique shapes. Also there is wider range of values where the numbers were pretty consistant. 
+
 ## (b) 
 
 Repeat the workflow from Problem 4(a) for this dataset. How do your confusion
@@ -124,4 +393,114 @@ matrices and misclassification error rates compare?
 
 
 
+```{r}
+
+library(caret)
+library(class)
+
+
+path = "~/git/DS301/HW10/mnist"
+
+train_image_path = file.path(path, "train-images-idx3-ubyte")
+test_image_path  = file.path(path, "t10k-images-idx3-ubyte")
+train_label_path = file.path(path, "train-labels-idx1-ubyte")
+test_label_path  = file.path(path, "t10k-labels-idx1-ubyte")
+
+load_mnist <- function() {
+  load_image_file <- function(filename) {
+    ret = list()
+    f = file(filename, "rb")
+    readBin(f, "integer", n = 1, size = 4, endian = "big")
+    ret$n = readBin(f, "integer", n = 1, size = 4, endian = "big")
+    nrow = readBin(f, "integer", n = 1, size = 4, endian = "big")
+    ncol = readBin(f, "integer", n = 1, size = 4, endian = "big")
+    x = readBin(f, "integer", n = ret$n * nrow * ncol, size = 1, signed = FALSE)
+    ret$x = matrix(x, ncol = nrow * ncol, byrow = TRUE)
+    close(f)
+    ret
+  }
+  
+  load_label_file <- function(filename) {
+    f = file(filename, "rb")
+    readBin(f, "integer", n = 1, size = 4, endian = "big")
+    n = readBin(f, "integer", n = 1, size = 4, endian = "big")
+    y = readBin(f, "integer", n = n, size = 1, signed = FALSE)
+    close(f)
+    y
+  }
+  
+  train <<- load_image_file(train_image_path)
+  test  <<- load_image_file(test_image_path)
+  
+  train$y <<- load_label_file(train_label_path)
+  test$y  <<- load_label_file(test_label_path)
+}
+
+
+show_digit <- function(arr784, col = gray(12:1/12), ...) {
+  image(matrix(arr784, nrow = 28)[, 28:1], col = col, ...)
+}
+
+mnist <- load_mnist()
+#head(mnist_fashion)
+
+# show the 5th image in the training set
+i <- 5
+show_digit(train$x[i, ])
+train$y[i]
+
+
+index.train = sample(1:dim(train$x)[1], 3000, replace = FALSE)
+index.test = sample(1:dim(test$x)[1], 100, replace = FALSE)
+
+sample_x = train$x[index.train, ]
+sample_y = train$y[index.train]
+
+test_x_sub = test$x[index_test, ]
+test_y_sub = as.factor(test$y[index_test])
+
+K = c(1, 3, 5, 7, 9)
+
+cv_error = matrix(NA, nrow = length(K), ncol = fold)
+fold = 10
+folds <- cut(seq(1, nrow(sample_x)), breaks = fold, labels = FALSE)
+
+for (i in 1:length(K)) {
+
+  
+  for (j in 1:fold) {
+    
+    val_idx = which(folds == j)
+    
+    cv_train_x = sample_x[-val_idx, ]
+    cv_train_y = sample_y[-val_idx]
+    cv_val_x   = sample_x[val_idx, ]
+    cv_val_y   = sample_y[val_idx]
+    
+    pred = knn(train = cv_train_x, test = cv_val_x, cl = cv_train_y, k = K[i])
+    cv_error[i, j] = mean(pred != cv_val_y)
+    
+  }
+  
+  
+}
+
+mean_errors = rowMeans(cv_error)
+opt_K = K[which.min(mean_errors)]
+
+final_pred = knn(train = sample_x, test = test_x_sub, cl = sample_y, k = opt_K)
+
+# Results
+conf_matrix = table(Predicted = final_pred, Actual = test_y_sub)
+error_rate = mean(final_pred != test_y_sub)
+
+print(conf_matrix)
+cat("Optimal K:", opt_K, "\n")
+cat("Fashion MNIST Error Rate:", error_rate, "\n")
+
+
+```
+
+
+# TODO - How do your confusion matrices and misclassification error rates compare?
 
