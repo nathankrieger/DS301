@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  17 APR 2026 10:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  22 APR 2026 11:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -493,33 +493,49 @@ File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 
 {/home/nathan-krieger/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}] [2] [3] [4]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 469.
+(Font)              <10> on input line 459.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 469.
+(Font)              <7> on input line 459.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 469.
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 499.
+(Font)              <5> on input line 459.
+[5{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 514.
 (/home/nathan-krieger/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [5{/home/nathan-krieger/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}] [6] (./HW10.aux)
+)
+
+LaTeX Font Warning: Font shape `T1/lmtt/bx/it' in size <10> not available
+(Font)              Font shape `T1/lmtt/b/sl' tried instead on input line 581.
+
+[6] [7] [8]
+<HW10_files/figure-latex/unnamed-chunk-11-1.pdf, id=74, 430.60875pt x 279.0425pt>
+File: HW10_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (type pdf)
+<use HW10_files/figure-latex/unnamed-chunk-11-1.pdf>
+Package pdftex.def Info: HW10_files/figure-latex/unnamed-chunk-11-1.pdf  used on input line 776.
+(pdftex.def)             Requested size: 430.60768pt x 279.04181pt.
+[9]
+Overfull \vbox (1.54077pt too high) detected at line 836
+ []
+
+[10 <./HW10_files/figure-latex/unnamed-chunk-11-1.pdf>] [11] (./HW10.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 14031 strings out of 469471
- 220048 string characters out of 5467771
- 681636 words of memory out of 5000000
- 42377 multiletter control sequences out of 15000+600000
- 676041 words of font info for 124 fonts, out of 8000000 for 9000
+ 14057 strings out of 469471
+ 220616 string characters out of 5467771
+ 681666 words of memory out of 5000000
+ 42387 multiletter control sequences out of 15000+600000
+ 676386 words of font info for 128 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  83i,6n,93p,1001b,702s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on HW10.pdf (6 pages, 208963 bytes).
+</home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi5.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr5.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtko10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
+Output written on HW10.pdf (11 pages, 328999 bytes).
 PDF statistics:
- 160 PDF objects out of 1000 (max. 8388607)
- 131 compressed objects within 2 object streams
- 24 named destinations out of 1000 (max. 500000)
- 26761 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 233 PDF objects out of 1000 (max. 8388607)
+ 182 compressed objects within 2 object streams
+ 30 named destinations out of 1000 (max. 500000)
+ 26774 words of extra memory for PDF output out of 29859 (max. 10000000)
 

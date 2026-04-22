@@ -32,7 +32,6 @@ glm_fit_full <- glm(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume,
 
 summary(glm_fit_full)
 
-
 ```
 
 ## (b) 
@@ -40,8 +39,6 @@ summary(glm_fit_full)
 Set a threshold of 0.5. Compute the confusion matrix and overall correct classification
 rate. Explain what the confusion matrix is telling you about the types of mistakes
 made by logistic regression.
-
-
 
 ```{r}
 
@@ -51,10 +48,14 @@ glm_probs_full <- predict(glm_fit_full, type = "response")
 glm_pred_full <- rep("Down", length(glm_probs_full))
 glm_pred_full[glm_probs_full > 0.5] <- "Up"
 
+table(glm_pred_full, Weekly$Direction)
 
 mean(glm_pred_full == Weekly$Direction)
 
 ```
+
+The overall correct classification rate is 56% so it's wrong 44% of the time. The confusion matrix shows predicted down but actually up being 430 is a very large of source of concern. 
+
 
 ## (c) 
 
@@ -245,7 +246,6 @@ confusion matrix and misclassification error rate on the test set.
 
 ```{r}
 
-
 set.seed(1)
 
 library(caret)
@@ -282,19 +282,20 @@ y_test  <- as.factor(mnist$test$labels[index_test])
 # KNN CV
 K = c(1, 3, 5, 7, 9)
 fold <- 10
-cv_error <- matrix(NA, nrow = length(K), ncol = fold)
 
 folds <- cut(seq(1, nrow(x_train)), breaks = fold, labels = FALSE)
 
-cv_errors <- matrix(NA, nrow = length(K), ncol = fold)
+cv_errors <- numeric(length(K))
 
 for (i in 1:length(K)) {
+  
+  current_cv_error <- numeric(fold)
   
   k_val <- K[i]
   
   for (j in 1:fold) {
     
-    val_indices <- which(folds == j, arr.ind = TRUE)
+    val_indices <- which(folds == j)
     
     cv_train_x <- x_train[-val_indices, ]
     cv_train_y <- y_train[-val_indices]
@@ -305,17 +306,15 @@ for (i in 1:length(K)) {
     # Run KNN for this fold
     pred <- knn(train = cv_train_x, test = cv_val_x, cl = cv_train_y, k = k_val)
     
-    # Store the error rate for this fold
-    cv_errors[i, j] <- mean(pred != cv_val_y)
-    
+    current_cv_error[i] <- mean(pred != cv_val_y)
   }
   
-
+  # Store the error rate for this fold
+    cv_errors[i] <- mean(current_cv_error)
 }
 
 
-mean_cv_errors <- rowMeans(cv_errors)
-optimal_k <- K[which.min(mean_cv_errors)]
+optimal_k <- K[which.min(cv_errors)]
 
 cat("Optimal K based on 10-fold CV:", optimal_k, "\n")
 
@@ -371,29 +370,6 @@ Produce plots of the first 5 observations in the training set. What do you see?
 
 ```{r}
 
-#load_mnist()
-
-show_digit <- function(arr784, col = gray(12:1/12), ...) {
-  image(matrix(arr784, nrow = 28)[, 28:1], col = col, ...)
-}
-
-par(mfrow = c(1, 5))
-for (i in 1:5) {
-  show_digit(train$x[i, ], main = paste("Label:", train$y[i]))
-}
-
-```
-
-This is a harder problem than the numbers because of the complicated, unique shapes. Also there is wider range of values where the numbers were pretty consistant. 
-
-## (b) 
-
-Repeat the workflow from Problem 4(a) for this dataset. How do your confusion
-matrices and misclassification error rates compare?
-
-
-
-```{r}
 
 library(caret)
 library(class)
@@ -442,13 +418,28 @@ show_digit <- function(arr784, col = gray(12:1/12), ...) {
 }
 
 mnist <- load_mnist()
-#head(mnist_fashion)
 
 # show the 5th image in the training set
-i <- 5
-show_digit(train$x[i, ])
-train$y[i]
+# Produce plots of the first 5 observations
+par(mfrow = c(1, 5)) # Set up the plot grid
+for (i in 1:5) {
+  show_digit(train$x[i, ], main = paste("Label:", train$y[i]))
+}
 
+
+
+```
+
+This is a harder problem than the numbers because of the complicated, unique shapes. Also there is wider range of values where the numbers were pretty consistent. 
+
+## (b) 
+
+Repeat the workflow from Problem 4(a) for this dataset. How do your confusion
+matrices and misclassification error rates compare?
+
+``` {r}
+
+mnist <- read_mnist()
 
 index.train = sample(1:dim(train$x)[1], 3000, replace = FALSE)
 index.test = sample(1:dim(test$x)[1], 100, replace = FALSE)
@@ -456,51 +447,58 @@ index.test = sample(1:dim(test$x)[1], 100, replace = FALSE)
 sample_x = train$x[index.train, ]
 sample_y = train$y[index.train]
 
-test_x_sub = test$x[index_test, ]
-test_y_sub = as.factor(test$y[index_test])
-
 K = c(1, 3, 5, 7, 9)
 
-cv_error = matrix(NA, nrow = length(K), ncol = fold)
-fold = 10
-folds <- cut(seq(1, nrow(sample_x)), breaks = fold, labels = FALSE)
+fold <- 10
+
+folds <- cut(seq(1, nrow(x_train)), breaks = fold, labels = FALSE)
+
+cv_errors <- numeric(length(K))
 
 for (i in 1:length(K)) {
-
+  
+  current_cv_error <- numeric(fold)
+  
+  k_val <- K[i]
   
   for (j in 1:fold) {
     
-    val_idx = which(folds == j)
+    val_indices <- which(folds == j)
     
-    cv_train_x = sample_x[-val_idx, ]
-    cv_train_y = sample_y[-val_idx]
-    cv_val_x   = sample_x[val_idx, ]
-    cv_val_y   = sample_y[val_idx]
+    cv_train_x <- sample_x[-val_indices, ]
+    cv_train_y <- sample_y[-val_indices]
     
-    pred = knn(train = cv_train_x, test = cv_val_x, cl = cv_train_y, k = K[i])
-    cv_error[i, j] = mean(pred != cv_val_y)
+    cv_val_x <- sample_x[val_indices, ]
+    cv_val_y <- sample_y[val_indices]
     
+    # Run KNN for this fold
+    pred <- knn(train = cv_train_x, test = cv_val_x, cl = cv_train_y, k = k_val)
+    
+    current_cv_error[i] <- mean(pred != cv_val_y)
   }
   
-  
+  # Store the error rate for this fold
+    cv_errors[i] <- mean(current_cv_error)
 }
 
-mean_errors = rowMeans(cv_error)
-opt_K = K[which.min(mean_errors)]
 
-final_pred = knn(train = sample_x, test = test_x_sub, cl = sample_y, k = opt_K)
+optimal_k <- K[which.min(cv_errors)]
 
-# Results
-conf_matrix = table(Predicted = final_pred, Actual = test_y_sub)
-error_rate = mean(final_pred != test_y_sub)
+cat("Optimal K based on 10-fold CV:", optimal_k, "\n")
 
+x_test <- test$x[index.test, ]
+y_test <- test$y[index.test]
+
+final_pred <- knn(train = sample_x, test = x_test, cl = sample_y, k = optimal_k)
+
+conf_matrix <- table(Predicted = final_pred, Actual = y_test)
 print(conf_matrix)
-cat("Optimal K:", opt_K, "\n")
-cat("Fashion MNIST Error Rate:", error_rate, "\n")
+
+test_error <- mean(final_pred != y_test)
+cat("Test Error Rate with K =", optimal_k, ":", test_error, "\n")
 
 
 ```
 
-
-# TODO - How do your confusion matrices and misclassification error rates compare?
+The misclassification rate for clothes is much higher than for numbers. This makes sense because the clothes seems to be a much harder problem. The confusion matrix for fashion has a lot less zeros. 
 
