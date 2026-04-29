@@ -1,0 +1,222 @@
+---
+title: "HW11"
+author: "Nathan Krieger"
+date: "2026-04-24"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 1: Concept Review
+
+## (a) 
+
+Suppose we collect data for a group of students in an economics class with variables X1 =
+hours studied, X2 = undergrad GPA, and Y = receive an A or not. We fit a logistic regression
+model and produce estimated regression coefficients, ${\hat\beta}_0$ = -6, ${\hat\beta}_1$ = 0.05, and ${\hat\beta}_2$ = 1.
+
+### i. 
+
+Estimate the probability that a student who studies for 40 hours and has an undergrad
+GPA of 3.5 gets an A in the class.
+
+```{r}
+
+b_0 <- -6
+b_1 <- 0.05
+b_2 <- 1
+
+Y <- b_0 + b_1 * 40 + b_2 * 3.5
+
+p <- exp(Y)/(1 + exp(Y))
+p
+
+```
+
+37.7%
+
+### ii. 
+
+How many hours would the student in part (i) need to study to have a 50% chance of
+getting an A in the class?
+
+$0 = -6 + 0.05x + 1(3.5)$
+
+$2.5 = 0.05x$
+
+$x = 50$
+
+They would need to study 50 hours.
+
+## (b) 
+
+If the true decision boundary between two groups is linear and the constant variance assump-
+tion holds, do you expect LDA or QDA to perform better on the testing set? Explain using
+concepts from bias/variance tradeoff.
+
+LDA would perform better since QDA would over fit the data. Since the true model is linear LDA would have near 0 bias. QDA would have a low bias too but it is more flexible causing it to have a higher variance.
+
+## (c) 
+
+Same setup as (b), do you expect LDA or QDA to perform better on the training set? Justify
+your answer.
+
+QDA would perform better on the training set because it has more flexibility and can over fit to the training data.
+
+## (d) 
+
+For each of the following classification problems, state whether you would advise a client to
+use LDA, logistic regression, or KNN and explain why:
+
+### i. 
+
+We want to predict gender based on height and weight. The training set consists of
+heights and weights for 82 men and 63 women.
+
+LDA because height and weight follow a normal distribution. LDA tends to be more stable than logistic regression.
+
+### ii. 
+
+We want to predict gender based on annual income and weekly working hours. The
+training set consists of 770 men and 820 women.
+
+Logistic regression because income is not expected to be normally distributed. LDA assumes a normal distribution.
+
+### iii. 
+
+We want to predict gender based on a set of predictors where the decision boundary
+is complicated and highly non-linear. The training set consists of 960 men and 1040
+women.
+
+KNN because LDA and logistic regression are both linear classifiers.
+
+# Problem 2: k-NN
+
+Assume our outcome Y can take on Y = 0, Y = 1 or Y = 2 (3 categories). Suppose we have a
+training data set with 5 observations. We want to classify a test observation using KNN. Below
+are all the distances between each of the 5 observations in training set and the test observation.
+
+Training Observation (i): 1     2     3     4     5
+Yi label:                 0     1     2     0     2
+distance:                 0.45  0.23  0.61  0.31  0.57
+
+## (a) 
+
+Based on the above, how would we classify our test observation using K = 1?
+
+Y = 1
+
+## (b) 
+
+How would we classify our test observation using K = 3?
+
+Y = 0
+
+## (c) 
+
+KNN is highly dependent on the choice of K. Does the classifier become more flexible or less
+flexible as K increases? Draw a plot with K on the x-axis and bias (squared) /variance on
+the y-axis. How does the bias/variance behave as K increases?
+
+Less flexible as K increases.
+
+TODO
+
+
+``` {r}
+
+library(ggplot2)
+library(tidyr)
+
+# 1. Create simulated data representing the theoretical curves
+# As K increases, flexibility decreases.
+k_values <- 1:100
+
+# Variance decreases as K increases (sturdier model)
+variance <- 100 / (k_values + 5) 
+
+# Bias^2 increases as K increases (simpler model)
+bias_sq <- 0.0005 * (k_values^2) + 0.5
+
+# Total error is the sum of the two (plus some irreducible error/noise)
+total_error <- variance + bias_sq + 1
+
+# 2. Combine into a data frame
+df <- data.frame(
+  K = k_values,
+  Variance = variance,
+  Bias_Squared = bias_sq,
+  Total_Error = total_error
+)
+
+# 3. Pivot the data for easier plotting with ggplot
+df_long <- pivot_longer(df, cols = -K, names_to = "Metric", values_to = "Value")
+
+# 4. Generate the plot
+ggplot(df_long, aes(x = K, y = Value, color = Metric)) +
+  geom_line(size = 1.2) +
+  scale_color_manual(values = c("Bias_Squared" = "blue", 
+                                 "Variance" = "red", 
+                                 "Total_Error" = "black")) +
+  labs(title = "Bias-Variance Tradeoff in k-NN",
+       subtitle = "As K increases, Flexibility decreases",
+       x = "K (Number of Neighbors)",
+       y = "Error / Magnitude",
+       color = "Legend") +
+  theme_minimal() +
+  annotate("text", x = 10, y = 15, label = "High Flexibility\n(Low K)", color = "darkgray") +
+  annotate("text", x = 90, y = 15, label = "Low Flexibility\n(High K)", color = "darkgray")
+
+```
+
+# Problem 3: Email Spam Part 2
+
+Use the Spam data set, from HW 9, for this problem. Repeat your code from Problem 3 part (b).
+
+## (a) 
+
+What type of mistake do we think is more critical here: reporting a meaningful email as spam
+(false positive) or a spam email as meaningful (false negative)?
+
+```{r}
+
+spam = read.csv("spambase.data", header = FALSE)
+
+```
+## (b) 
+
+Fit a logistic regression model here and apply it to the test set. Based on your answer to part
+(a), plot the ROC curve of true positive rate vs. false positive rate or true negative rate vs.
+false negative rate.
+
+## (c) 
+
+Output the confusion matrix. What is the false positive and false negative rate when we set
+the threshold to be 0.5?
+
+## (d) 
+
+Adjust the threshold such that your chosen error (false positive or false negative) is no more
+than 0.03. You should choose the threshold carefully so that the true positive and true
+negative rate are also maximized. Report that threshold here.
+
+## (e) 
+
+Implement LDA and repeat parts (b) – (d).
+
+## (f) 
+
+Train K-NN on the training set. You should obtain K using cross-validation: write your own
+for-loops to do so. Remember to standardize your predictors for KNN. Report the confusion
+matrix and overall test error rates for the classifier.
+
+## (g) 
+
+Which classifier would you recommend for this data? Justify your answer.
+
+
+
+
+
