@@ -120,10 +120,7 @@ KNN is highly dependent on the choice of K. Does the classifier become more flex
 flexible as K increases? Draw a plot with K on the x-axis and bias (squared) /variance on
 the y-axis. How does the bias/variance behave as K increases?
 
-Less flexible as K increases.
-
-TODO
-
+Less flexible as K increases. So bias increases, variance decreases.
 
 ``` {r}
 
@@ -265,17 +262,99 @@ print(best_row)
 
 Implement LDA and repeat parts (b) – (d).
 
+```{r}
+
+library(MASS)
+
+# (b) Fit LDA and plot ROC
+lda_fit <- lda(V58 ~ ., data = train)
+lda_probs <- predict(lda_fit, newdata = test)$posterior[, 2] # Prob for Spam
+
+ROCRpred_lda <- prediction(lda_probs, test$V58)
+perf_lda <- performance(ROCRpred_lda, "tpr", "fpr")
+
+plot(perf_lda, colorize = TRUE, main = "ROC Curve: LDA (Spam)")
+abline(a = 0, b = 1, lty = 2)
+
+# (c) Confusion Matrix at 0.5 threshold
+lda_pred_50 <- rep(0, nrow(test))
+lda_pred_50[lda_probs > 0.5] <- 1
+
+conf_matrix_lda <- table(Predicted = lda_pred_50, Actual = test$V58)
+print(conf_matrix_lda)
+
+fpr_lda <- conf_matrix_lda[2,1] / sum(conf_matrix_lda[,1])
+fnr_lda <- conf_matrix_lda[1,2] / sum(conf_matrix_lda[,2])
+cat("LDA 0.5 Threshold -> FPR:", fpr_lda, "| FNR:", fnr_lda, "\n")
+
+# (d) Threshold for FPR <= 0.03
+lda_thresh_df <- data.frame(
+  threshold = perf_lda@alpha.values[[1]], 
+  fpr = perf_lda@x.values[[1]], 
+  tpr = perf_lda@y.values[[1]]
+)
+
+safe_lda <- subset(lda_thresh_df, fpr <= 0.03)
+# We pick the one with the highest TPR (the last row of the subset)
+best_lda_row <- safe_lda[nrow(safe_lda), ]
+print(best_lda_row)
+
+```
+
+False positive rate: 0.02968
+
 ## (f) 
 
 Train K-NN on the training set. You should obtain K using cross-validation: write your own
 for-loops to do so. Remember to standardize your predictors for KNN. Report the confusion
 matrix and overall test error rates for the classifier.
 
+
+
+```{r}
+
+library(class)
+
+# Standardize predictors (excluding the response column V58)
+train_x <- scale(train[, -58])
+test_x <- scale(test[, -58], center = attr(train_x, "scaled:center"), 
+                scale = attr(train_x, "scaled:scale"))
+
+train_y <- train$V58
+test_y <- test$V58
+
+# 10-fold CV for K
+set.seed(1)
+K_vals <- c(1, 3, 5, 7, 9, 11)
+fold_size <- 10
+folds <- cut(seq(1, nrow(train_x)), breaks = fold_size, labels = FALSE)
+cv_errors <- matrix(NA, nrow = length(K_vals), ncol = fold_size)
+
+for(i in 1:length(K_vals)) {
+  for(j in 1:fold_size) {
+    val_idx <- which(folds == j)
+    pred <- knn(train = train_x[-val_idx, ], test = train_x[val_idx, ], 
+                cl = train_y[-val_idx], k = K_vals[i])
+    cv_errors[i, j] <- mean(pred != train_y[val_idx])
+  }
+}
+
+mean_cv_errors <- rowMeans(cv_errors)
+best_K <- K_vals[which.min(mean_cv_errors)]
+cat("Optimal K:", best_K, "\n")
+
+# Final evaluation on test set
+knn_pred <- knn(train = train_x, test = test_x, cl = train_y, k = best_K)
+conf_knn <- table(Predicted = knn_pred, Actual = test_y)
+print(conf_knn)
+cat("KNN Test Error Rate:", mean(knn_pred != test_y), "\n")
+
+
+```
+
 ## (g) 
 
 Which classifier would you recommend for this data? Justify your answer.
 
-
-
-
+I would recommend logistic regression because marking a meaningful email as spam is more consequential. Logistic regression minimized the false positive rate to 3%. LDA had a similar FPR but the FNR was much higher. KNN had a worse results than both of the other methods.
 
