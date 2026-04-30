@@ -180,27 +180,86 @@ Use the Spam data set, from HW 9, for this problem. Repeat your code from Proble
 What type of mistake do we think is more critical here: reporting a meaningful email as spam
 (false positive) or a spam email as meaningful (false negative)?
 
-```{r}
+A false positive is more critical. Reporting a non-spam email as spam is bad so we want to keep false positive rates low.
 
-spam = read.csv("spambase.data", header = FALSE)
-
-```
 ## (b) 
 
 Fit a logistic regression model here and apply it to the test set. Based on your answer to part
 (a), plot the ROC curve of true positive rate vs. false positive rate or true negative rate vs.
 false negative rate.
 
+```{r}
+
+#install.packages("ROCR")
+library(ROCR)
+
+spam = read.csv("spambase.data", header = FALSE)
+
+set.seed(1)
+
+n <- nrow(spam)
+
+train_index <- sample(1:n, n / 2, replace = FALSE)
+
+train <- spam[train_index, ]
+test  <- spam[-train_index, ]
+
+glm_fit <- glm(V58 ~ ., data = train, family = "binomial")
+
+glm_prob <- predict(glm_fit, newdata = test, type = "response")
+
+ROCRpred <- prediction(glm_prob, test$V58)
+perf <- performance(ROCRpred, "tpr", "fpr")
+
+plot(perf, colorize = TRUE, main = "ROC Curve: Logistic Regression (Spam)")
+abline(a = 0, b = 1, lty = 2) # Diagonal line
+
+```
+
 ## (c) 
 
 Output the confusion matrix. What is the false positive and false negative rate when we set
 the threshold to be 0.5?
+
+``` {r}
+
+glm_pred <- rep(0, nrow(test))
+glm_pred[glm_prob > 0.5] <- 1
+
+# Confusion Matrix
+conf_matrix <- table(Predicted = glm_pred, Actual = test$V58)
+print(conf_matrix)
+
+# Rates
+fpr <- conf_matrix[2,1] / sum(conf_matrix[,1]) # FP / Total Negatives
+fnr <- conf_matrix[1,2] / sum(conf_matrix[,2]) # FN / Total Positives
+
+cat("Threshold 0.5 -> FPR:", fpr, "| FNR:", fnr)
+
+```
 
 ## (d) 
 
 Adjust the threshold such that your chosen error (false positive or false negative) is no more
 than 0.03. You should choose the threshold carefully so that the true positive and true
 negative rate are also maximized. Report that threshold here.
+
+```{r}
+
+thresholds_df <- data.frame(
+  threshold = perf@alpha.values[[1]], 
+  fpr = perf@x.values[[1]], 
+  tpr = perf@y.values[[1]]
+)
+
+safe_thresholds <- subset(thresholds_df, fpr <= 0.03)
+best_row <- safe_thresholds[nrow(safe_thresholds), ]
+
+print(best_row)
+
+```
+
+0.7858869 
 
 ## (e) 
 

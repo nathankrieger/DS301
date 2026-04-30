@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  29 APR 2026 10:52
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.17)  30 APR 2026 13:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -504,25 +504,31 @@ File: HW11_files/figure-latex/unnamed-chunk-2-1.pdf Graphic file (type pdf)
 <use HW11_files/figure-latex/unnamed-chunk-2-1.pdf>
 Package pdftex.def Info: HW11_files/figure-latex/unnamed-chunk-2-1.pdf  used on input line 299.
 (pdftex.def)             Requested size: 453.6939pt x 315.17673pt.
-[4 <./HW11_files/figure-latex/unnamed-chunk-2-1.pdf>] [5] (./HW11.aux)
+[4 <./HW11_files/figure-latex/unnamed-chunk-2-1.pdf>]
+<HW11_files/figure-latex/unnamed-chunk-3-1.pdf, id=59, 461.725pt x 285.065pt>
+File: HW11_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type pdf)
+<use HW11_files/figure-latex/unnamed-chunk-3-1.pdf>
+Package pdftex.def Info: HW11_files/figure-latex/unnamed-chunk-3-1.pdf  used on input line 358.
+(pdftex.def)             Requested size: 461.72388pt x 285.0643pt.
+[5 <./HW11_files/figure-latex/unnamed-chunk-3-1.pdf>] [6] (./HW11.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 14018 strings out of 469471
- 219553 string characters out of 5467771
+ 14026 strings out of 469471
+ 219946 string characters out of 5467771
  674685 words of memory out of 5000000
- 42364 multiletter control sequences out of 15000+600000
+ 42371 multiletter control sequences out of 15000+600000
  678357 words of font info for 122 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  83i,6n,93p,1001b,679s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/nathan-krieger/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on HW11.pdf (5 pages, 252221 bytes).
+Output written on HW11.pdf (6 pages, 276370 bytes).
 PDF statistics:
- 198 PDF objects out of 1000 (max. 8388607)
- 162 compressed objects within 2 object streams
- 28 named destinations out of 1000 (max. 500000)
- 26806 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 211 PDF objects out of 1000 (max. 8388607)
+ 171 compressed objects within 2 object streams
+ 29 named destinations out of 1000 (max. 500000)
+ 26811 words of extra memory for PDF output out of 29859 (max. 10000000)
 
