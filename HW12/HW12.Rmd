@@ -1,0 +1,113 @@
+---
+title: "HW12"
+author: "Nathan Krieger"
+date: "2026-05-01"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 1: Decision Trees
+
+## (a) 
+
+See Figure 1. Sketch the tree corresponding to the partition of the predictor space illustrated
+on the left-hand side of Figure 1. The numbers inside the boxes indicate the mean of Y within
+each region.
+
+
+## (b) 
+
+See Figure 1. Create a diagram showing how the predictor space is partitioned (similar to the
+left-hand size of Figure 1) based on the tree on the right-hand side of Figure 1. You should
+divide up the predictor space into the correct regions, and indicate the prediction of Y for
+each region.
+
+[FIGURE]
+
+Use the OJ data set, which is part of the ISLR2 package, for this problem.
+
+## (c) 
+
+Create a training set containing a random sample of 800 observations, and a test set containing
+the remaining observations.
+
+## (d) 
+
+Fit a tree to the training data with Purchase as the response and the other variables as
+predictors. For this dataset, use deviance as your split criteria. Produce summary statistics
+about the tree (using the summary() function) and describe the results obtained. What is
+the training error? How many terminal nodes does the tree have?
+
+## (e) 
+
+Create a plot of the tree, and interpret the results.
+
+## (f) 
+
+Predict the response on the test set and report the confusion matrix.
+
+## (g) 
+
+Apply cv.tree() to determine the optimal tree size. Do this carefully to prevent double-
+dipping. Produce a plot with tree size on the x-axis and cross-validated classification error
+rate on the y-axis.
+
+## (h) 
+
+What tree size corresponds to the lowest cross-validated classification error rate? If cross-
+validation does not lead to selection of a pruned tree, then create a pruned tree with five
+terminal nodes.
+
+## (i) 
+
+Compare the training error rates between the pruned and un-pruned trees. Which is higher?
+Is this what you expect? Explain.
+
+## (j) 
+
+Compare the test errors rates between the pruned and un-pruned trees. Which is higher? Is
+this what you expect? Explain.
+
+
+# Problem 2: Bagging and Random Forests
+
+We’ll use the Carseats for this problem; it is part of the ISLR2 library. Convert Sales to a
+qualitative response, the same way we did in class.
+
+## (a) 
+
+Split the data set into a training and test set.
+
+## (b) 
+
+Fit a classification tree to the training set. Use gini index as your splitting criteria. Plot the
+tree here and interpret the results. Report your training and test error.
+
+## (c) 
+
+Implement cross-validation to obtain the optimal level of tree complexity. What size tree is
+optimal? What is the test error for the pruned tree?
+
+## (d) 
+
+Implementing bagging on the training set. Set B = 500, where B is the number of trees.
+What test error do you obtain? Use the importance() function to determine which variables
+are the most important and report them here.
+
+## (e) 
+
+Implement random forests on the training. Experiment with different values of m (m =
+1, 2, 3, . . . , 10) and report the test error for different values of m in a table.
+
+## (f) 
+
+Looking at your table from part (e), would it be appropriate to choose the m that gives us
+the smallest test error? Explain. (Hint: the answer is no.)
+
+## (g) 
+
+Technically m is a tuning parameter. Implement a data-driven approach to decide on the
+appropriate m. Report that value here.
