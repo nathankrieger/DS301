@@ -59,7 +59,7 @@ table(lda_pred$class, Smarket_test$Direction)
 mean(lda_pred$class == Smarket_test$Direction)
 
 # Misclassification rate
-mean(lda_pred$class __ Smarket_test$Direction)
+mean(lda_pred$class != Smarket_test$Direction)
 
 
 # Look at the first few posterior probabilities
@@ -71,7 +71,7 @@ lda_pred$class[1:10]
 # Since there are only two classes, this is equivalent to using a 0.5 threshold.
 
 # Count how many observations have P(Up | X) > 0.52
-sum(lda_pred$posterior[, "Up"] >  ____ )
+sum(lda_pred$posterior[, "Up"] >  0.52)
 
 # Use a stricter threshold: predict Up only if P(Up | X) > 0.52
 lda_class <- rep("Down", nrow(Smarket_test))
@@ -91,7 +91,7 @@ mean(lda_class == Smarket_test$Direction)
 ###########
 
 # Fit QDA using Lag1 and Lag2 as predictors
-qda_fit <- ___ (Direction ~ Lag1 + Lag2, data = Smarket_train)
+qda_fit <- qda(Direction ~ Lag1 + Lag2, data = Smarket_train)
 
 qda_fit
 

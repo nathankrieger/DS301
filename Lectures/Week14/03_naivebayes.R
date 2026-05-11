@@ -2,7 +2,7 @@ library(ISLR2)   # contains the Smarket dataset
 library(MASS)    # commonly used for classification methods such as LDA and QDA
 library(e1071)   # provides the naiveBayes() function
 library(klaR)    # provides NaiveBayes() with kernel density estimation option
-install.packages('klaR')
+#install.packages('klaR')
 
 head(Smarket)
 # The Smarket data contains daily percentage returns for the S&P 500 from 2001 to 2005.
