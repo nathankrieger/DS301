@@ -1,0 +1,1057 @@
+---
+title: "DS 3010 R Coding Cheatsheet Template"
+author: ""
+date: "Spring 2026"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    theme: readable
+  pdf_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE)
+```
+
+# How to Use This Sheet
+
+Use this sheet when you are working on a coding problem and are not sure which R function to use. The sections are organized by task. In this template version, most code has been removed so you can practice filling in the correct R commands.
+
+---
+
+# 1. Load Common Packages
+
+| Goal | Package | Code |
+|---|---|---|
+| ISLR datasets | `ISLR2` | `library(ISLR2)` |
+| Linear / quadratic discriminant analysis | `MASS` | `library(MASS)` |
+| Naive Bayes | `e1071` | `library(e1071)` |
+| Naive Bayes with kernel density | `klaR` | `library(klaR)` |
+| KNN | `class` | `library(class)` |
+| Cross-validation folds | `caret` | `library(caret)` |
+| Classification/regression trees | `tree` | `library(tree)` |
+| Bagging and random forests | `randomForest` | `library(randomForest)` |
+| Boosting | `gbm` | `library(gbm)` |
+| ROC / AUC | `ROCR` | `library(ROCR)` |
+
+```{r load-packages}
+library(ISLR2)
+library(MASS)
+library(e1071)
+library(klaR)
+library(class)
+library(caret)
+library(tree)
+library(randomForest)
+library(gbm)
+library(ROCR)
+```
+
+---
+
+# 2. Basic Data Setup
+
+
+## View the data
+
+```{r view-data}
+# View the first few rows of the data.
+
+head(Hitters)
+
+# Check the dimensions of the data.
+
+dim(Hitters)
+nrow(Hitters)
+ncol(Hitters)
+
+# Get summary statistics.
+
+summary(Hitters)
+
+# View the variable names.
+
+str(Hitters)
+
+```
+
+## Remove missing values
+
+```{r remove-missing}
+# Remove observations with missing values.
+
+na.omit(Hitters)
+
+```
+
+## Create a new binary response variable
+
+```{r binary-response}
+# Create a binary response variable from a quantitative variable.
+
+High <- factor(ifelse(Carseats$Sales <= 8, "No", "Yes"))
+
+
+```
+
+## Log-transform a response variable
+
+```{r log-transform}
+
+# Create a log-transformed version of a quantitative variable.
+X1 = seq(1,100)
+X2 = seq(51, 150)
+Y = 6+ 4*X1 + 2*X2
+
+df = data.frame(Y, X1, X2)
+
+fit <- lm(log(Y) ~ X1 + X2, data = df)
+
+```
+
+## Remove a variable from the data
+
+```{r remove-variable}
+# Remove a variable from the dataset if it should not be used as a predictor.
+
+Carseats$Sales <- NULL
+
+```
+
+---
+
+# 3. Train/Test Split
+
+## Randomly split data into training and test sets
+
+```{r train-test-random}
+# Set a seed.
+
+set.seed(1)
+
+# Find the number of observations.
+
+n <- nrow(Hitters)
+
+# Randomly select training row indices.
+# Define the test row indices.
+index <- sample(1:n,n/2) 
+
+# Create training and test data frames.
+
+train <- Hitters[index, ]
+test <- Hitters[-index, ]
+```
+
+## Split based on a condition
+
+```{r train-test-condition}
+## Split based on a condition
+
+# Create a logical vector for the training set based on a condition.
+# Example: Use observations from years before 2005 for training
+train_logic <- (Smarket$Year < 2005)
+
+# Create training and test data frames.
+# Use the logical vector to subset rows
+train <- Smarket[train_logic, ]
+test  <- Smarket[!train_logic, ] # '!' means NOT (observations 2005 and later)
+```
+
+---
+
+# 4. Linear Regression
+
+## Fit a linear regression model
+
+```{r linear-regression}
+# Fit a linear regression model.
+fit <- lm(Salary ~ ., data = train)
+
+# Display the model summary.
+summary(fit)
+```
+
+## Predict using linear regression
+
+```{r linear-predict}
+# Use the fitted model to predict on the test data.
+
+pred <- predict(fit, newdata = test)
+summary(pred)
+
+# Calculate Test Mean Squared Error (MSE)
+# This is the average of the squared differences between predicted and actual.
+test_mse <- mean((pred - test$Salary)^2)
+
+```
+
+## Confidence intervals for coefficients
+
+```{r linear-confint}
+# Find confidence intervals for the regression coefficients.
+# 'level' specifies the confidence level (default is 0.95).
+confint(fit, level = 0.95)
+```
+
+## Diagnostic plots
+
+```{r linear-diagnostics}
+# Create diagnostic plots for the fitted linear regression model.
+
+par(mfrow = c(2, 2))
+plot(fit)
+
+```
+
+---
+
+# 5. Bootstrap
+
+## Bootstrap sample
+
+Use this when you want to sample with replacement from the original dataset.
+
+```{r bootstrap-sample}
+# Sample row indices with replacement.
+# 'replace = TRUE' is what makes it a bootstrap sample.
+boot_indices <- sample(1:nrow(Hitters), nrow(Hitters), replace = TRUE)
+
+# Create a bootstrap sample using those row indices.
+boot_data <- Hitters[boot_indices, ]
+
+```
+
+## Bootstrap standard error of a statistic
+
+Example: bootstrap standard error of the mean.
+
+```{r bootstrap-se}
+# Set a seed for reproducibility.
+set.seed(1)
+
+# Find the sample size.
+n <- nrow(Hitters)
+
+# Choose the number of bootstrap samples (B).
+B <- 1000
+
+# Create an empty vector to store the bootstrap statistics.
+boot_stats <- numeric(B)
+
+# Use a loop to create bootstrap samples and compute the statistic each time.
+# Example statistic: Mean of Salary
+for (i in 1:B) {
+  indices <- sample(1:n, n, replace = TRUE)
+  boot_sample <- Hitters[indices, ]
+  boot_stats[i] <- mean(boot_sample$Salary, na.rm = TRUE)
+}
+
+# Compute the bootstrap standard error.
+# The standard error is simply the standard deviation of the bootstrap distribution.
+boot_se <- sd(boot_stats)
+```
+
+## Analytical standard error of the sample mean
+
+```{r analytic-se}
+# Compute the analytical standard error of the sample mean.
+s <- sd(Hitters$Salary, na.rm = TRUE)
+n <- sum(!is.na(Hitters$Salary)) # number of non-missing observations
+analytic_se <- s / sqrt(n)
+```
+
+---
+
+# 6. Logistic Regression
+
+Use this when the response is binary, such as `Yes/No`.
+
+## Fit logistic regression
+
+```{r logistic-fit}
+
+n = nrow(Smarket)
+index <- sample(1:n,n/2) 
+
+train_data <- Smarket[index, ]
+test_data <- Smarket[-index, ]
+# Fit a logistic regression model using glm().
+# 'family = "binomial"' is essential to tell R to perform logistic regression.
+glm.fit <- glm(Direction ~ Lag1 + Lag2, data = train_data, family = "binomial")
+
+# Display the model summary.
+# Look for coefficients with p-values < 0.05 to identify significant predictors.
+summary(glm.fit)
+```
+
+## Predict probabilities
+
+```{r logistic-prob}
+# Predict probabilities on the test data.
+# 'type = "response"' ensures R returns probabilities P(Y=1|X) instead of log-odds.
+glm.probs <- predict(glm.fit, newdata = test_data, type = "response")
+```
+
+## Convert probabilities to class labels
+
+```{r logistic-class}
+# Start by assigning all observations to the baseline/negative class.
+# Use contrasts(data$variable) to see which level is 0 and which is 1.
+glm.pred <- rep("Down", nrow(test_data))
+
+# Change predictions to the positive class when the probability is above the threshold.
+# Standard threshold is 0.5.
+glm.pred[glm.probs > 0.5] <- "Up"
+```
+
+## Confusion matrix and test error
+
+```{r logistic-error}
+# Create a confusion matrix.
+# Format: table(Predicted, Actual)
+conf_matrix <- table(glm.pred, test_data$Direction)
+print(conf_matrix)
+
+# Compute the test error rate.
+# The mean of the logical vector where predictions do not match the actual values.
+test_error <- mean(glm.pred != test_data$Direction)
+cat("Test Error Rate:", test_error)
+
+# Accuracy is simply (1 - test_error)
+accuracy <- mean(glm.pred == test_data$Direction)
+```
+
+---
+
+# 7. LDA and QDA
+
+Use these for classification problems.
+
+## LDA
+
+Use LDA when predictors are approximately normally distributed within each class and covariance matrices are assumed equal across classes.
+
+```{r lda}
+# Fit an LDA model.
+lda.fit <- lda(Direction ~ Lag1 + Lag2, data = train_data)
+
+# Make predictions on the test data.
+# Note: You do not need type="response" here.
+lda.pred <- predict(lda.fit, newdata = test_data)
+
+# Extract predicted class labels.
+lda.class <- lda.pred$class
+
+# Extract posterior probabilities.
+# This returns a matrix where each column is a class (e.g., "Down", "Up").
+lda.post <- lda.pred$posterior
+
+# Create a confusion matrix.
+table(lda.class, test_data$Direction)
+
+# Compute accuracy.
+mean(lda.class == test_data$Direction)
+
+# Compute the misclassification rate.
+mean(lda.class != test_data$Direction)
+```
+
+## Change classification threshold for LDA
+
+Use this when you want to make the classifier more conservative. For example, predict `Up` only if the posterior probability of `Up` is larger than 0.52.
+
+```{r lda-threshold}
+# Start by assigning all observations to the baseline class (e.g., "Down").
+lda.pred_adj <- rep("Down", nrow(test_data))
+
+# Change predictions only when the posterior probability of the second class 
+# (e.g., "Up") is larger than the chosen threshold.
+# Check lda.pred$posterior to see which column index corresponds to "Up".
+lda.pred_adj[lda.pred$posterior[, "Up"] > 0.52] <- "Up"
+
+# Create a confusion matrix with the new threshold.
+table(lda.pred_adj, test_data$Direction)
+
+# Compute accuracy.
+mean(lda.pred_adj == test_data$Direction)
+
+# Compute the misclassification rate.
+mean(lda.pred_adj != test_data$Direction)
+```
+
+## QDA
+
+Use QDA when covariance matrices are allowed to differ across classes.
+
+```{r qda}
+# Fit a QDA model.
+qda.fit <- qda(Direction ~ Lag1 + Lag2, data = train_data)
+
+# Make predictions on the test data.
+qda.pred <- predict(qda.fit, newdata = test_data)
+
+# Extract predicted class labels.
+qda.class <- qda.pred$class
+
+# Extract posterior probabilities.
+qda.post <- qda.pred$posterior
+
+# Create a confusion matrix.
+table(qda.class, test_data$Direction)
+
+# Compute accuracy.
+mean(qda.class == test_data$Direction)
+
+# Compute the misclassification rate.
+mean(qda.class != test_data$Direction)
+```
+
+---
+
+# 8. Naive Bayes
+
+Use Naive Bayes for classification when you assume predictors are conditionally independent within each class.
+
+## Naive Bayes with normal density assumption
+
+```{r naive-bayes}
+# Fit a Naive Bayes model.
+# Assumes quantitative predictors follow a Normal distribution within each class.
+nb.fit <- naiveBayes(Direction ~ Lag1 + Lag2, data = train_data)
+
+# Predict class labels on the test data.
+nb.class <- predict(nb.fit, newdata = test_data)
+
+# Predict class probabilities on the test data.
+# type = "raw" returns the posterior probabilities for each class.
+nb.probs <- predict(nb.fit, newdata = test_data, type = "raw")
+
+# Create a confusion matrix.
+table(nb.class, test_data$Direction)
+
+# Compute accuracy.
+mean(nb.class == test_data$Direction)
+```
+
+## Naive Bayes with kernel density estimation
+
+Use this when you do not want to force the normal density assumption.
+
+```{r naive-bayes-kernel}
+# Fit a Naive Bayes model using kernel density estimation.
+# usekernel = TRUE allows for a non-parametric estimate of the density.
+nb.kernel.fit <- NaiveBayes(Direction ~ Lag1 + Lag2, data = train_data, usekernel = TRUE)
+
+# Predict on the test data.
+nb.kernel.pred <- predict(nb.kernel.fit, newdata = test_data)
+
+# Extract predicted class labels.
+nb.kernel.class <- nb.kernel.pred$class
+
+# Extract posterior probabilities.
+nb.kernel.post <- nb.kernel.pred$posterior
+
+# Create a confusion matrix.
+table(nb.kernel.class, test_data$Direction)
+
+# Compute accuracy.
+mean(nb.kernel.class == test_data$Direction)
+```
+
+---
+
+# 9. KNN
+
+Use KNN for classification when prediction is based on nearby observations.
+
+## Standardize predictors
+
+Important because KNN is distance-based.
+
+```{r knn-standardize}
+# Standardize the predictor variables so they have mean 0 and stdev 1.
+# This prevents predictors with large scales from dominating the distance.
+standardized.X <- scale(Smarket[, c("Lag1", "Lag2")])
+
+# Verify variance is 1 for all columns
+var(standardized.X[, 1])
+
+
+# 1. Create the logical vector (TRUE for training years, FALSE for test years)
+train_logic <- (Smarket$Year < 2005)
+
+# 2. Now the KNN setup will work
+train.X <- standardized.X[train_logic, ]
+test.X <- standardized.X[!train_logic, ]
+
+train.Direction <- Smarket$Direction[train_logic]
+test.Direction <- Smarket$Direction[!train_logic]
+```
+
+## Train/test setup for KNN
+
+```{r knn-setup}
+# Create the training predictor matrix.
+train.X <- standardized.X[train_logic, ]
+
+# Create the test predictor matrix.
+test.X <- standardized.X[!train_logic, ]
+
+# Create the training response vector.
+train.Direction <- Smarket$Direction[train_logic]
+
+# Create the test response vector.
+test.Direction <- Smarket$Direction[!train_logic]
+```
+
+## Fit KNN
+
+```{r knn-fit}
+# Set a seed for reproducibility (knn handles ties randomly).
+set.seed(1)
+
+# Fit KNN and predict class labels for the test data in one step.
+# k is the number of nearest neighbors.
+knn.pred <- knn(train.X, test.X, train.Direction, k = 1)
+```
+
+## Evaluate KNN
+
+```{r knn-evaluate}
+# Create a confusion matrix.
+table(knn.pred, test.Direction)
+
+# Compute accuracy.
+mean(knn.pred == test.Direction)
+
+# Compute the misclassification rate.
+mean(knn.pred != test.Direction)
+```
+
+## Choose K using 5-fold cross-validation
+
+```{r knn-cv}
+# Set a seed.
+set.seed(1)
+
+# Create 5 folds from the training response.
+folds <- createFolds(train.Direction, k = 5)
+
+# Create a list of K values to try.
+ks <- c(1, 3, 5, 7, 9, 11, 15, 20)
+
+# Create an empty vector to store cross-validation accuracy for each K.
+cv_accuracies <- numeric(length(ks))
+
+# Loop over each K value.
+for (i in 1:length(ks)) {
+  fold_accuracies <- numeric(5)
+  
+  # For each K, loop over the 5 folds.
+  for (j in 1:5) {
+    # For each fold, create a validation set and a training set.
+    val_idx <- folds[[j]]
+    
+    # Fit KNN on the training folds and predict on the validation fold.
+    pred <- knn(train = train.X[-val_idx, ], 
+                test = train.X[val_idx, ], 
+                cl = train.Direction[-val_idx], 
+                k = ks[i])
+    
+    fold_accuracies[j] <- mean(pred == train.Direction[val_idx])
+  }
+  
+  # Store the average validation accuracy for each K.
+  cv_accuracies[i] <- mean(fold_accuracies)
+}
+
+# Choose the K value with the highest cross-validation accuracy.
+best_k <- ks[which.max(cv_accuracies)]
+cat("Best K:", best_k)
+```
+
+---
+
+# 10. ROC Curve and AUC
+
+Use this when you want to evaluate a classifier across different thresholds.
+
+```{r roc-curve}
+# Create a prediction object using predicted probabilities and true class labels.
+# Note: 'glm.probs' should be the numeric probabilities from predict(..., type="response")
+# 'test_data$Direction' is the actual true class.
+pred_obj <- prediction(glm.probs, test_data$Direction)
+
+# Create the ROC performance object.
+# "tpr" is True Positive Rate (Sensitivity), "fpr" is False Positive Rate (1 - Specificity)
+roc_perf <- performance(pred_obj, measure = "tpr", x.measure = "fpr")
+
+# Plot the ROC curve.
+plot(roc_perf, colorize = TRUE, main = "ROC Curve")
+abline(a = 0, b = 1, lty = 2, col = "gray") # Add diagonal line for random guessing
+```
+
+## ROC curve with cutoff labels
+
+```{r roc-cutoffs}
+# Plot the ROC curve with cutoff labels.
+plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0, 1, by = 0.1), 
+     text.adj = c(-0.2, 1.7), main = "ROC Curve with Cutoffs")
+```
+
+## Compute AUC
+
+```{r auc}
+# Compute the AUC.
+auc_perf <- performance(pred_obj, measure = "auc")
+
+# Extract the AUC value from the nested list structure.
+auc_value <- auc_perf@y.values[[1]]
+cat("AUC:", auc_value)
+```
+
+---
+
+# 11. Classification Trees
+
+Use this when the response is categorical.
+
+## Fit a classification tree
+
+```{r classification-tree}
+
+n = nrow(Carseats)
+index <- sample(1:n,n/2) 
+
+train_data <- Carseats[index, ]
+test_data <- Carseats[-index, ]
+
+High <- factor(ifelse(Carseats$Sales <= 8, "No", "Yes"))
+
+# Fit a classification tree.
+# Ensure the response variable is a factor for a classification tree.
+tree.fit <- tree(High ~ . - Sales, data = train_data)
+
+# Display a summary of the tree.
+# Shows variables used, number of terminal nodes, and training error rate.
+summary(tree.fit)
+
+# Plot the tree.
+plot(tree.fit)
+
+# Add text labels to the tree.
+# 'pretty = 0' includes category names for qualitative predictors.
+text(tree.fit, pretty = 0)
+```
+
+## Predict class labels
+
+```{r classification-tree-predict}
+# Predict class labels on the test data.
+# 'type = "class"' is required to get the category labels instead of probabilities.
+tree.pred <- predict(tree.fit, newdata = test_data, type = "class")
+```
+
+## Test classification error
+
+```{r classification-tree-error}
+# Create a confusion matrix.
+table(tree.pred, test_data$High)
+
+# Compute the test error rate.
+mean(tree.pred != test_data$High)
+```
+
+## Prune a classification tree
+
+```{r classification-tree-prune}
+# Set a seed for reproducibility of the cross-validation folds.
+set.seed(3)
+
+# Use cross-validation to choose the tree size.
+# 'FUN = prune.misclass' tells R to use the misclassification rate to guide pruning.
+cv.tree_obj <- cv.tree(tree.fit, FUN = prune.misclass)
+
+# Plot cross-validation error (dev) against tree size (size).
+plot(cv.tree_obj$size, cv.tree_obj$dev, type = "b", xlab = "Tree Size", ylab = "CV Error")
+
+# Find the best tree size (the one with the lowest CV error).
+best_size <- cv.tree_obj$size[which.min(cv.tree_obj$dev)]
+
+# Prune the tree using the best size.
+pruned.tree <- prune.misclass(tree.fit, best = best_size)
+
+# Plot the pruned tree.
+plot(pruned.tree)
+
+# Add text labels to the pruned tree.
+text(pruned.tree, pretty = 0)
+```
+
+---
+
+# 12. Regression Trees
+
+Use this when the response is quantitative.
+
+## Fit a regression tree
+
+```{r regression-tree}
+
+n = nrow(Hitters)
+index <- sample(1:n,n/2) 
+
+train_data <- Hitters[index, ]
+test_data <- Hitters[-index, ]
+
+# Fit a regression tree.
+# Note: Ensure the response (Salary) is numeric.
+tree.fit <- tree(Salary ~ ., data = train_data)
+
+# Display a summary of the tree.
+# For regression, this shows variables used and the Residual Mean Deviance (MSE).
+summary(tree.fit)
+
+# Plot the tree.
+plot(tree.fit)
+
+# Add text labels to the tree.
+text(tree.fit, pretty = 0)
+```
+
+## Predict and calculate test MSE
+
+```{r regression-tree-mse}
+# Predict on the test data.
+# Note: type = "class" is NOT used here; we want numeric values.
+tree.pred <- predict(tree.fit, newdata = test_data)
+
+# Compute the test MSE.
+test_mse <- mean((tree.pred - test_data$Salary)^2)
+cat("Regression Tree Test MSE:", test_mse)
+```
+
+## Number of terminal nodes
+
+```{r terminal-nodes}
+# Find the number of terminal nodes in the tree.
+summary(tree.fit)$size
+```
+
+## Prune a regression tree
+
+```{r regression-tree-prune}
+# Set a seed.
+set.seed(1)
+
+# Use cross-validation to choose the tree size.
+# For regression, we do NOT use FUN = prune.misclass. 
+# The default is to use deviance (RSS).
+cv.tree_obj <- cv.tree(tree.fit)
+
+# Plot cross-validation error against tree size.
+plot(cv.tree_obj$size, cv.tree_obj$dev, type = "b", xlab = "Tree Size", ylab = "CV RSS")
+
+# Find the best tree size.
+best_size <- cv.tree_obj$size[which.min(cv.tree_obj$dev)]
+
+# Prune the tree using the best size.
+pruned.tree <- prune.tree(tree.fit, best = best_size)
+
+# Predict using the pruned tree.
+pruned.pred <- predict(pruned.tree, newdata = test_data)
+
+# Compute the test MSE for the pruned tree.
+pruned_mse <- mean((pruned.pred - test_data$Salary)^2)
+cat("Pruned Tree Test MSE:", pruned_mse)
+```
+
+---
+
+# 13. Bagging
+
+Bagging is a special case of random forests where `mtry = p`, meaning all predictors are considered at each split.
+
+## Fit bagging model
+
+```{r bagging}
+# Find the number of predictors (p). 
+# Subtract 1 because 'Salary' is the response, not a predictor.
+p <- ncol(train_data) - 1
+
+# Fit a bagging model by setting mtry equal to the number of predictors.
+# 'importance = TRUE' allows us to view variable importance later.
+set.seed(1)
+bag.fit <- randomForest(Salary ~ ., data = train_data, mtry = p, importance = TRUE)
+```
+
+## Predict and calculate MSE
+
+```{r bagging-mse}
+# Predict on the test data.
+bag.pred <- predict(bag.fit, newdata = test_data)
+
+# Compute the test MSE.
+bag_mse <- mean((bag.pred - test_data$Salary)^2)
+cat("Bagging Test MSE:", bag_mse)
+```
+
+## Variable importance
+
+```{r bagging-importance}
+# View variable importance in a table.
+# %IncMSE: How much the MSE increases if we remove that variable.
+# IncNodePurity: Total decrease in node impurity (RSS) from splitting on that variable.
+importance(bag.fit)
+
+# Plot variable importance for a quick visual.
+varImpPlot(bag.fit)
+```
+
+---
+
+# 14. Random Forests
+
+Random forests improve bagging by using only a random subset of predictors at each split.
+
+## Fit random forest model
+
+```{r random-forest}
+# Fit a random forest model. 
+# Typical default for regression is p/3. Let's try mtry = 6.
+set.seed(1)
+rf.fit <- randomForest(Salary ~ ., data = train_data, mtry = 6, importance = TRUE)
+```
+
+## Predict and calculate MSE
+
+```{r random-forest-mse}
+# Predict on the test data.
+rf.pred <- predict(rf.fit, newdata = test_data)
+
+# Compute the test MSE.
+rf_mse <- mean((rf.pred - test_data$Salary)^2)
+cat("Random Forest Test MSE:", rf_mse)
+```
+
+## Choose `mtry` in a data-driven way
+
+```{r random-forest-mtry}
+# Find the number of predictors.
+p <- ncol(train_data) - 1
+
+# Create possible mtry values (from 1 to p).
+mtry_values <- 1:p
+
+# Create an empty vector to store test errors.
+test_errors <- numeric(p)
+
+# Loop over possible mtry values.
+for (m in mtry_values) {
+  set.seed(1)
+  # For each mtry value, fit a random forest model.
+  rf.tmp <- randomForest(Salary ~ ., data = train_data, mtry = m)
+  
+  # Predict on the test data.
+  pred.tmp <- predict(rf.tmp, newdata = test_data)
+  
+  # Store the test MSE.
+  test_errors[m] <- mean((pred.tmp - test_data$Salary)^2)
+}
+
+# Choose the mtry value with the lowest test MSE.
+best_mtry <- which.min(test_errors)
+cat("Optimal mtry:", best_mtry)
+
+# Plot the results to see the trade-off
+plot(mtry_values, test_errors, type = "b", xlab = "mtry", ylab = "Test MSE")
+```
+
+## Variable importance
+
+```{r random-forest-importance}
+# View variable importance.
+importance(rf.fit)
+
+# Plot variable importance.
+varImpPlot(rf.fit)
+```
+
+---
+
+# 15. Boosting for Regression Trees
+
+Boosting fits trees sequentially. Each new tree tries to improve the current model.
+
+## Fit boosted regression trees
+
+```{r boosting}
+# Fit a boosted regression tree model.
+# 'distribution = "gaussian"' is for regression; use "bernoulli" for binary classification.
+# 'n.trees = 5000' is the number of trees.
+# 'interaction.depth = 4' limits the number of splits in each tree.
+set.seed(1)
+boost.fit <- gbm(Salary ~ ., data = train_data, distribution = "gaussian", 
+                 n.trees = 5000, interaction.depth = 4)
+```
+
+## Variable importance
+
+```{r boosting-importance}
+# View variable importance for the boosting model.
+# This produces a summary table and a bar plot by default.
+summary(boost.fit)
+```
+
+## Partial dependence plots
+
+```{r partial-dependence}
+# Create partial dependence plots for selected predictors.
+# Example: 'LStat' and 'RM' (if using Boston data) or 'CAtBat' and 'CHits' (if using Hitters).
+plot(boost.fit, i = "CAtBat")
+plot(boost.fit, i = "CHits")
+```
+
+## Predict and calculate test MSE
+
+```{r boosting-mse}
+# Predict on the test data using the chosen number of trees.
+# You MUST specify n.trees in the predict function for gbm.
+boost.pred <- predict(boost.fit, newdata = test_data, n.trees = 5000)
+
+# Compute the test MSE.
+boost_mse <- mean((boost.pred - test_data$Salary)^2)
+cat("Boosting Test MSE:", boost_mse)
+```
+
+## Try a different shrinkage value
+
+```{r boosting-shrinkage}
+# Fit another boosted regression tree model with a higher shrinkage (learning rate).
+boost.fit2 <- gbm(Salary ~ ., data = train_data, distribution = "gaussian", 
+                  n.trees = 5000, interaction.depth = 4, shrinkage = 0.2, verbose = F)
+
+# Predict on the test data.
+boost.pred2 <- predict(boost.fit2, newdata = test_data, n.trees = 5000)
+
+# Compute the test MSE.
+boost_mse2 <- mean((boost.pred2 - test_data$Salary)^2)
+cat("Boosting (Shrinkage=0.2) Test MSE:", boost_mse2)
+```
+
+---
+
+# 16. Error and Accuracy
+
+## Regression mean squared error
+
+Use this when the response is quantitative.
+
+```{r mse}
+# Note: Assumes you have already defined 'test_data' and 'pred' (numeric predictions)
+# Formula: mean((actual - predicted)^2)
+mse <- mean((test_data$Salary - pred)^2)
+cat("Test MSE:", mse)
+```
+
+## Classification accuracy
+
+Use this when the response is categorical.
+
+```{r accuracy}
+# 1. Setup Data and Model
+library(ISLR2)
+train_logic <- (Smarket$Year < 2005)
+train_data  <- Smarket[train_logic, ]
+test_data   <- Smarket[!train_logic, ]
+
+# 2. Fit and Predict
+glm.fit   <- glm(Direction ~ Lag1 + Lag2, data = train_data, family = "binomial")
+glm.probs <- predict(glm.fit, newdata = test_data, type = "response")
+
+# 3. Create pred.class (Converting probabilities to labels)
+pred.class <- rep("Down", nrow(test_data))
+pred.class[glm.probs > 0.5] <- "Up"
+pred.class <- as.factor(pred.class)
+
+# 4. Compute accuracy
+# Compare predicted labels to actual labels in test_data
+accuracy <- mean(test_data$Direction == pred.class)
+cat("Accuracy:", accuracy)
+```
+
+## Classification error rate
+
+```{r error-rate}
+# Method 1: Mean of mismatches
+error_rate <- mean(test_data$Direction != pred.class)
+
+# Method 2: Complement of accuracy
+error_rate <- 1 - accuracy
+cat("Error Rate:", error_rate)
+```
+
+## Confusion matrix
+
+```{r confusion-matrix}
+# Create a confusion matrix.
+# table(Predicted, Actual)
+conf_matrix <- table(pred.class, test_data$Direction)
+print(conf_matrix)
+```
+
+## Precision
+
+Use this when the positive class is rare and you care about how many predicted positives are truly positive.
+
+```{r precision}
+# Create a confusion matrix object
+cm <- table(pred.class, test_data$Direction)
+
+# Compute precision for the positive class (e.g., "Up")
+# cm["Predicted", "Actual"]
+precision <- cm["Up", "Up"] / sum(cm["Up", ])
+cat("Precision:", precision)
+```
+
+---
+
+# 17. Common Model Comparison Table
+
+| Method | Response Type | Main Function | Prediction Function | Main Evaluation |
+|---|---|---|---|---|
+| Linear regression | Quantitative | `lm()` | `predict()` | MSE |
+| Logistic regression | Binary | `glm(..., family="binomial")` | `predict(..., type="response")` | Accuracy, error, ROC/AUC |
+| LDA | Categorical | `lda()` | `predict()` | Accuracy, error |
+| QDA | Categorical | `qda()` | `predict()` | Accuracy, error |
+| Naive Bayes | Categorical | `naiveBayes()` | `predict()` | Accuracy, error |
+| KNN | Categorical | `knn()` | `knn()` directly predicts | Accuracy, error, precision |
+| Classification tree | Categorical | `tree()` | `predict(..., type="class")` | Accuracy, error |
+| Regression tree | Quantitative | `tree()` | `predict()` | MSE |
+| Bagging | Both | `randomForest(..., mtry=p)` | `predict()` | MSE or accuracy |
+| Random forest | Both | `randomForest()` | `predict()` | MSE or accuracy |
+| Boosting | Usually quantitative here | `gbm()` | `predict(..., n.trees=...)` | MSE |
+
+---
+
+# 18. Quick Decision Guide
+
+| If the problem asks you to... | Use this |
+|---|---|
+| Estimate uncertainty by resampling | Bootstrap |
+| Predict a quantitative response with a straight-line model | Linear regression |
+| Predict a binary response using probabilities | Logistic regression |
+| Compare thresholds | ROC curve / AUC |
+| Classify using normal class distributions | LDA / QDA |
+| Classify using Bayes theorem and conditional independence | Naive Bayes |
+| Classify based on nearby observations | KNN |
+| Build an interpretable tree | Classification or regression tree |
+| Reduce variance of trees by averaging many trees | Bagging |
+| Decorrelate trees by randomly selecting predictors | Random forest |
+| Fit trees sequentially to improve prediction | Boosting |
+
+---

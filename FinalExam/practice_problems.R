@@ -1,6 +1,7 @@
 # Practice problems
 
 
+set.seed(1)
 
 
 head(Hitters)
@@ -9,10 +10,10 @@ df = data.frame(Hitters)
 
 
 
-Hitters = no.omit(Hitters)
+Hitters = na.omit(Hitters)
 
 
-train_index = sample(1:nrow(hitters), nrow(hitters) / 2)
+train_index = sample(1:nrow(Hitters), nrow(Hitters) / 2)
 
 train = Hitters[train_index, ]
 test = Hitters[-train_index, ]
@@ -25,4 +26,9 @@ plot(fit)
 text(fit, pretty = 0)
 
 
-# 9 terminal nodes
+# 8 terminal nodes
+
+
+pred <- predict(fit, newdata = test)
+test_mse <- mean((pred - test$Salary)^2)
+test_mse
